@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>eventsar · календарь мероприятий</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230575D6%27/%3E%3Crect x=%277%27 y=%279%27 width=%2718%27 height=%2716%27 rx=%272%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272.2%27/%3E%3Cpath d=%27M7 14h18M12 6v5M20 6v5%27 stroke=%27%23fff%27 stroke-width=%272.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0575D6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --blue:#0575D6; --blue-dark:#0560B0; --accent:#0D9AFF; --navy:#27455C;
+  --text:#2E3033; --muted:#636B74; --line:#DDE2E6; --panel:#EDF0F2; --panel-2:#F6F8F9; --bg:#FFFFFF;
+  --ok:#157A45; --warn:#8A5A00; --bad:#C62828;
+  --c-congress:#0575D6; --c-course:#27455C; --c-cadaver:#0B7A7A; --c-workshop:#7A4FBF;
+  --c-webinar:#3F6E9A; --c-meeting:#636B74; --c-exhibition:#B86E00; --c-other:#7A848D; --c-observation:#1F7F5A; --c-support:#C2457A; --c-training:#8A6D3B;
+  --dur-fast:.12s; --dur:.2s; --dur-slow:.28s; --ease:cubic-bezier(.2,.7,.2,1);
+  --r:8px; --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 16px rgba(39,69,92,.08);
+  font-family:Figtree,"Proxima Nova",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:80px}
+html,body{margin:0;height:100%;background:var(--panel-2);color:var(--text);font-size:15px;line-height:1.5}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-100px;z-index:50;background:var(--blue);color:#fff;padding:10px 14px;border-radius:var(--r);font-weight:600;text-decoration:none}
+.skip:focus{top:8px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+[hidden]{display:none!important}
+
+/* ---------- gate ---------- */
+#gate{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#FFFFFF 0%,#EDF0F2 100%)}
+.gate-card{width:100%;max-width:400px;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:32px 28px;border-top:4px solid var(--blue)}
+.brand{display:flex;align-items:baseline;gap:10px}
+.mark{font-weight:700;font-size:22px;color:var(--blue);letter-spacing:-.02em}
+.mark{font-size:24px}
+.sub{color:var(--muted);font-weight:500;font-size:14px}
+.gate-card h1{font-size:20px;margin:18px 0 6px;font-weight:600}
+.gate-card p{color:var(--muted);margin:0 0 18px;font-size:14px}
+.lbl{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field{display:flex;gap:8px}
+.pwwrap{flex:1;position:relative;min-width:0}
+.pwwrap input{width:100%;padding:11px 44px 11px 12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;outline:none;min-height:44px}
+.pwwrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(5,117,214,.15)}
+.pwwrap input[aria-invalid="true"]{border-color:var(--bad)}
+.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:var(--muted);border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.eye:hover{background:var(--panel);color:var(--text)}
+.btn{padding:10px 16px;min-height:44px;border-radius:var(--r);border:1px solid transparent;background:var(--blue);color:#fff;font-weight:600}
+.btn[disabled]{opacity:.6;cursor:progress}
+.btn:hover{background:var(--blue-dark)}
+.btn.ghost{background:#fff;color:var(--text);border-color:var(--line)}
+.btn.ghost:hover{background:var(--panel)}
+.btn.sm{padding:6px 10px;min-height:36px;font-size:13px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:10px}
+
+/* ---------- layout ---------- */
+#app{display:grid;grid-template-rows:auto 1fr auto;min-height:100vh}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.topbar{height:4px;background:linear-gradient(90deg,var(--blue),var(--accent))}
+.hrow{display:flex;align-items:center;gap:14px;padding:10px 20px;flex-wrap:wrap}
+.hrow .brand{margin-right:auto}
+.nav{display:flex;align-items:center;gap:6px}
+.iconbtn{width:40px;height:40px;border-radius:var(--r);border:1px solid var(--line);background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
+.iconbtn:hover{background:var(--panel)}
+.period{font-weight:600;font-size:17px;min-width:170px;min-height:40px;text-align:center;text-transform:capitalize;cursor:pointer;padding:6px 10px;border:0;background:transparent;border-radius:var(--r)}
+.period:hover{background:var(--panel)}
+.seg{display:inline-flex;background:var(--panel);border-radius:var(--r);padding:3px}
+.seg button{border:0;background:transparent;padding:7px 12px;min-height:34px;border-radius:6px;font-weight:500;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 2px rgba(0,0,0,.08);font-weight:600}
+.search{position:relative}
+.search input{width:240px;min-height:40px;padding:8px 12px 8px 34px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel-2);outline:none}
+.search input:focus{border-color:var(--blue);background:#fff}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--blue);color:#fff;font-size:12px;font-weight:700;text-align:center;line-height:18px;margin-left:6px}
+
+.body{display:grid;grid-template-columns:284px minmax(0,1fr);min-height:0}
+#filters{border-right:1px solid var(--line);background:#fff;padding:16px;overflow:auto;position:sticky;top:59px;height:calc(100vh - 59px)}
+#filters h2,#filters h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 8px;font-weight:600}
+#filters h2{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px;min-height:30px;font-size:13px;display:inline-flex;align-items:center;gap:6px;color:var(--text);white-space:nowrap;max-width:100%}
+.chip>span:not(.n):not(.dot){overflow:hidden;text-overflow:ellipsis}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.chip .n{color:var(--muted);font-size:12px}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip.on .n{color:rgba(255,255,255,.8)}
+.chip.on .dot{box-shadow:0 0 0 2px #fff}
+.fhead{display:flex;align-items:center;justify-content:space-between}
+.link{background:none;border:0;color:var(--blue);padding:0;font-size:13px;text-decoration:underline}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:14px;cursor:pointer}
+
+main{padding:16px 20px;min-width:0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#view>*{animation:fadeUp var(--dur) var(--ease)}
+.card{transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(39,69,92,.12)}
+.ev{transition:background var(--dur-fast) var(--ease)}
+.chip{transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.btn,.iconbtn{transition:background var(--dur-fast) var(--ease),opacity var(--dur-fast) var(--ease)}
+.btn:active,.iconbtn:active{opacity:.85}
+.seg button{transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;box-shadow:0 0 0 4px #fff}
+.ev:focus-visible,.card:focus-visible{outline-offset:1px}
+footer{padding:10px 20px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);background:#fff;display:flex;gap:16px;flex-wrap:wrap}
+
+/* ---------- month ---------- */
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.dow{padding:8px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--panel-2);border-bottom:1px solid var(--line)}
+.cell{min-height:118px;min-width:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;position:relative;cursor:pointer}
+.cell:nth-child(7n){border-right:0}
+.cell:hover{background:var(--panel-2)}
+.cell.out{background:#FAFBFC;color:#B5BCC2}
+.cell.wknd:not(.out){background:#FCFDFD}
+.dnum{font-size:13px;font-weight:600;display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;border-radius:50%;border:0;background:transparent;color:inherit;padding:0;cursor:pointer}
+.dnum:hover{background:var(--panel)}
+.cell.today .dnum{background:var(--blue);color:#fff}
+.ev{display:block;width:100%;text-align:left;margin-top:3px;padding:3px 6px 3px 8px;border:0;border-radius:5px;font:inherit;font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--panel);border-left:3px solid var(--c);color:var(--text);cursor:pointer}
+.ev.cont{opacity:.75;border-left-style:dotted}
+.ev.cancelled{text-decoration:line-through;opacity:.55}
+.ev:hover{background:#E3EAF0}
+.ev.sel{outline:2px solid var(--blue)}
+.more{font-size:12px;color:var(--blue);margin-top:3px;font-weight:600;border:0;background:none;padding:2px 4px;border-radius:4px;cursor:pointer}
+.more:hover{background:var(--panel)}
+.fuzzy{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;padding:8px 12px;background:#fff;border:1px dashed var(--line);border-radius:10px}
+.fuzzy .ev{margin:0;display:inline-block;width:auto;max-width:260px}
+.fz-t{font-size:12px;color:var(--muted);margin-right:4px}
+
+/* ---------- week / day / list ---------- */
+.wgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.wcol{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:300px;padding:10px;box-shadow:var(--shadow)}
+.wcol h4{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:600;text-transform:capitalize}
+.wcol.today h4 b{background:var(--blue);color:#fff;border-radius:6px;padding:1px 6px}
+.card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card:hover{border-color:var(--blue);border-left-color:var(--c)}
+.card.cancelled .t{text-decoration:line-through;opacity:.6}
+.card .t{font-weight:600;font-size:14px}
+.card .m{color:var(--muted);font-size:13px;margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.card .m>span{display:inline-flex;align-items:center;gap:4px}
+.card .m svg.i{width:14px;height:14px}
+.list h2{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;font-weight:600}
+.list h2:first-child{margin-top:0}
+.lrow{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:start}
+.ldate{font-weight:600;color:var(--navy);font-size:14px;padding-top:10px;line-height:1.2}
+.ldate small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.empty{color:var(--muted);text-align:center;padding:60px 20px;background:#fff;border:1px dashed var(--line);border-radius:12px}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;background:var(--panel);color:var(--muted);line-height:1.4}
+.pill.s-registration{background:#E3F6EC;color:var(--ok)}
+.pill.s-confirmed{background:#E3F0FB;color:var(--blue)}
+.pill.s-tentative{background:#FFF3E0;color:var(--warn)}
+.pill.s-soldout::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#555;margin-right:5px;vertical-align:1px}
+.pill.s-cancelled,.pill.s-postponed{background:#FDE8E8;color:var(--bad)}
+.pill.s-soldout{background:#EEE;color:#555}
+.pill.ax{background:var(--navy);color:#fff}
+.pill.type{color:var(--text);background:var(--panel);border-left:3px solid var(--c);border-radius:4px 999px 999px 4px}
+
+/* ---------- drawer ---------- */
+#overlay{position:fixed;inset:0;background:rgba(39,69,92,.45);z-index:30;opacity:0;pointer-events:none;transition:opacity var(--dur) var(--ease)}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:#fff;z-index:31;box-shadow:-8px 0 30px rgba(0,0,0,.15);transform:translateX(100%);transition:transform var(--dur-slow) var(--ease);display:flex;flex-direction:column;outline:none;visibility:hidden}
+body.open #drawer{visibility:visible}
+body.open #overlay{opacity:1;pointer-events:auto}
+body.open #drawer{transform:none}
+.dh{padding:18px 22px 14px;border-bottom:1px solid var(--line);border-top:5px solid var(--c)}
+.dh .close{position:absolute;right:14px;top:14px}
+.dh h2{margin:8px 0 6px;font-size:20px;line-height:1.25;padding-right:40px}
+.dh .when{font-size:15px;font-weight:600;color:var(--navy)}
+.db{padding:16px 22px;overflow:auto;flex:1}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:8px 12px;font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;word-break:break-word}
+.sec{margin-top:18px}
+.sec h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px;font-weight:600}
+.desc{white-space:pre-wrap}
+.hist{font-size:13px;border-left:2px solid var(--line);padding-left:12px}
+.hist div{margin-bottom:6px}
+.hist time{color:var(--muted);font-size:12px;display:block}
+.df{padding:12px 22px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;background:var(--panel-2)}
+.upd{font-size:12px;color:var(--muted);margin-left:auto;align-self:center}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15);margin-right:4px}
+.demo{background:#FFF3E0;color:#8A5A00;font-size:12px;padding:6px 10px;border-radius:6px;margin-top:10px}
+.mobonly{display:none}
+
+@media (pointer:coarse){.iconbtn{width:44px;height:44px}.chip{min-height:40px;padding:8px 12px}.seg button{min-height:40px}.btn.sm{min-height:44px}.dnum{width:32px;height:32px}}
+@media (max-width:1100px){
+  html,body{font-size:16px}
+  .body{grid-template-columns:1fr}
+  #filters{position:fixed;left:0;right:0;top:0;bottom:0;height:auto;z-index:25;transform:translateY(-100%);transition:transform .25s;padding-top:60px}
+  body.filters #filters{transform:none}
+  .mobonly{display:inline-flex}
+  .search input{width:150px}
+  .period{min-width:0;font-size:15px}
+  .hrow{padding:8px 12px;gap:8px}
+  main{padding:10px}
+  .cell{min-height:64px;padding:4px}
+  .ev,.more{display:none}
+  .dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--c);display:block}
+  .wgrid{grid-template-columns:1fr}
+  .wcol{min-height:0}
+  .lrow{grid-template-columns:70px 1fr}
+  .kv{grid-template-columns:110px 1fr}
+}
+@media (min-width:1101px){.dots{display:none}}
+@media print{header,#filters,footer{display:none}.body{display:block}}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <form class="gate-card" id="gateForm">
+    <div class="brand"><span class="mark">eventsar</span><span class="sub">Arthrex · календарь мероприятий</span></div>
+    <h1>Вход</h1>
+    <p>Введите пароль этой недели. Его выдаёт администратор календаря.</p>
+    <label class="lbl" for="pw">Пароль недели</label>
+    <div class="field">
+      <div class="pwwrap">
+        <input type="password" id="pw" autocomplete="current-password" autofocus required aria-describedby="pwErr">
+        <button type="button" class="eye" id="eye" aria-label="Показать пароль" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <button class="btn" type="submit" id="pwBtn">Войти</button>
+    </div>
+    <div class="err" id="pwErr" role="alert"></div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <a class="skip" href="#view">К содержанию</a>
+  <header>
+    <div class="topbar"></div>
+    <div class="hrow">
+      <div class="brand"><span class="mark" role="heading" aria-level="1">eventsar</span><span class="sub">Arthrex · календарь мероприятий</span></div>
+      <nav class="nav" aria-label="Период">
+        <button class="iconbtn" id="prev" aria-label="Предыдущий период" title="Назад (←)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="period" id="period" title="Выбрать месяц" aria-label="Выбрать месяц"></button>
+        <button class="iconbtn" id="next" aria-label="Следующий период" title="Вперёд (→)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        <button class="btn ghost sm" id="today" title="Сегодня (T)">Сегодня</button>
+      </nav>
+      <div class="seg" id="views" role="group" aria-label="Вид календаря">
+        <button data-v="month" class="on" aria-pressed="true">Месяц</button>
+        <button data-v="week" aria-pressed="false">Неделя</button>
+        <button data-v="day" aria-pressed="false">День</button>
+        <button data-v="list" aria-pressed="false">Список</button>
+      </div>
+      <div class="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="search" id="q" placeholder="Поиск…" aria-label="Поиск по мероприятиям"></div>
+      <button class="btn ghost sm mobonly" id="fbtn" aria-controls="filters" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4"/></svg>&nbsp;Фильтры<span class="badge" id="fcount" hidden>0</span></button>
+      <button class="iconbtn" id="logout" aria-label="Выйти" title="Выйти"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside id="filters" aria-label="Фильтры">
+      <div class="fhead"><h2>Фильтры</h2><button class="link" id="reset">Сбросить</button></div>
+      <h3>Тип</h3><div class="chips" data-f="type"></div>
+      <h3>Специализация</h3><div class="chips" data-f="specialty"></div>
+      <h3>Статус</h3><div class="chips" data-f="status"></div>
+      <h3>Участие Arthrex</h3><div class="chips" data-f="arthrex"></div>
+      <h3>Формат</h3><div class="chips" data-f="format"></div>
+      <h3>Страна</h3><div class="chips" data-f="country"></div>
+      <h3>Направление</h3><div class="chips" data-f="line"></div>
+      <h3>Менеджер</h3><div class="chips" data-f="managers"></div>
+      <h3>Источник</h3><div class="chips" data-f="source"></div>
+      <label class="toggle"><input type="checkbox" id="showPast"> Показывать прошедшие в списке</label>
+      <div style="margin-top:16px" class="mobonly"><button class="btn" id="fclose" style="width:100%">Показать</button></div>
+    </aside>
+    <main id="view" tabindex="-1"></main>
+  </div>
+
+  <footer>
+    <span id="stat"></span>
+    <span id="built"></span>
+    <span style="margin-left:auto">eventsar · внутренний календарь Arthrex MedEd</span>
+  </footer>
+</div>
+
+<div id="overlay"></div>
+<div id="drawer" role="dialog" aria-modal="true" aria-labelledby="dtitle" tabindex="-1"></div>
+
+<script>
+/* ======================= словари ======================= */
+const L = {
+  type:{congress:'Конгресс',course:'Курс',cadaver:'Кадавер-лаб',workshop:'Мастер-класс',observation:'Клиническое наблюдение',support:'Хирургическая поддержка',training:'Тренинг сотрудников',webinar:'Вебинар',meeting:'Совещание',exhibition:'Выставка',other:'Другое'},
+  specialty:{shoulder:'Плечо',elbow:'Локоть',knee:'Колено',hip:'Бедро',foot:'Стопа и голеностоп',hand:'Кисть и запястье',spine:'Позвоночник',sports:'Спортивная травма',arthroplasty:'Эндопротезирование',trauma:'Травма',biologics:'Ортобиология',endosurgery:'Эндохирургия',general:'Общее'},
+  status:{tentative:'Предварительно',confirmed:'Подтверждено',registration:'Регистрация открыта',soldout:'Мест нет',cancelled:'Отменено',postponed:'Перенесено'},
+  arthrex:{none:'Без участия',sponsor:'Спонсор',booth:'Стенд',faculty:'Спикеры',workshop:'Мастер-класс',host:'Организатор'},
+  format:{offline:'Очно',online:'Онлайн',hybrid:'Гибрид'},
+};
+const TYPE_ORDER=['congress','course','cadaver','workshop','observation','support','webinar','exhibition','training','meeting','other'];
+const ROWCOLOR={'#00B050':'зелёная — проведено/закрыто','#92D050':'светло-зелёная','#FFC000':'жёлтая — в работе','#FF0000':'красная — отменено/проблема','#C00000':'тёмно-красная','#FFFF00':'жёлтая','yellow':'жёлтая','red':'красная'};
+const MONTHS=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+const MONTHS_G=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const DOW=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const DOW_L=['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье'];
+
+/* ======================= утилиты дат ======================= */
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const startOfWeek=d=>{const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x};
+const todayISO=iso(new Date());
+function fmtRange(e){
+  if(e.fuzzy) return fuzzyLabel(e);
+  const a=parse(e.start), b=parse(e.end||e.start);
+  if(e.start===(e.end||e.start)) return `${a.getDate()} ${MONTHS_G[a.getMonth()]} ${a.getFullYear()}${e.time?', '+e.time:''}`;
+  if(a.getMonth()===b.getMonth()) return `${a.getDate()}–${b.getDate()} ${MONTHS_G[b.getMonth()]} ${b.getFullYear()}`;
+  return `${a.getDate()} ${MONTHS_G[a.getMonth()]} – ${b.getDate()} ${MONTHS_G[b.getMonth()]} ${b.getFullYear()}`;
+}
+function fmtDT(s){if(!s)return '';const d=new Date(s);if(isNaN(d))return s;return `${d.getDate()} ${MONTHS_G[d.getMonth()]} ${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ICON={cal:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',org:'<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>'};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+
+/* ======================= шифрование ======================= */
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(password, blob){
+  const enc=new TextEncoder();
+  const base=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(blob.salt),iterations:blob.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(blob.iv)},key,b64(blob.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+/* ======================= состояние ======================= */
+let DATA=null, EVENTS=[];
+const S={view:'month',cursor:new Date(),q:'',f:{type:new Set(),specialty:new Set(),status:new Set(),arthrex:new Set(),format:new Set(),country:new Set(),line:new Set(),managers:new Set(),source:new Set()},past:false,open:null};
+S.cursor.setHours(0,0,0,0);
+
+function readHash(){
+  const p=new URLSearchParams(location.hash.slice(1));
+  if(p.get('v')) S.view=p.get('v');
+  if(p.get('d')){const d=parse(p.get('d'));if(!isNaN(d))S.cursor=d}
+  if(p.get('e')) S.open=p.get('e');
+}
+function writeHash(){
+  const p=new URLSearchParams();p.set('v',S.view);p.set('d',iso(S.cursor));if(S.open)p.set('e',S.open);
+  history.replaceState(null,'','#'+p.toString());
+}
+
+/* ======================= вход ======================= */
+const $=s=>document.querySelector(s);
+async function tryLogin(pw, silent){
+  const err=$('#pwErr'); const btn=$('#pwBtn');
+  btn.disabled=true; btn.setAttribute('aria-busy','true'); if(!silent) btn.textContent='Проверяю…'; err.textContent=''; $('#pw').removeAttribute('aria-invalid');
+  try{
+    const r=await fetch('data.enc?'+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw new Error('Файл данных недоступен ('+r.status+'). Откройте сайт через сервер, а не как файл.');
+    const blob=await r.json();
+    DATA=await decrypt(pw,blob);
+    sessionStorage.setItem('ak_pw',pw);
+    err.textContent='';
+    boot();
+  }catch(e){
+    if(e.name==='OperationError'){err.textContent='Неверный пароль. Проверьте раскладку и попробуйте ещё раз.';$('#pw').setAttribute('aria-invalid','true');$('#pw').select()}
+    else err.textContent=e.message||'Ошибка';
+    sessionStorage.removeItem('ak_pw');
+  }finally{btn.disabled=false;btn.removeAttribute('aria-busy');btn.textContent='Войти'}
+}
+$('#gateForm').addEventListener('submit',e=>{e.preventDefault();tryLogin($('#pw').value,false)});
+$('#logout').addEventListener('click',()=>{sessionStorage.removeItem('ak_pw');location.reload()});
+$('#eye').addEventListener('click',()=>{const i=$('#pw'),b=$('#eye'),show=i.type==='password';i.type=show?'text':'password';b.setAttribute('aria-pressed',show);b.setAttribute('aria-label',show?'Скрыть пароль':'Показать пароль');b.innerHTML=show?'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.9 4.2A10 10 0 0 1 12 4c7 0 10 8 10 8a13 13 0 0 1-1.7 2.7M6.6 6.6A13 13 0 0 0 2 12s3 8 10 8a10 10 0 0 0 5.4-1.6M2 2l20 20"/></svg>':'<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';i.focus()});
+
+/* ======================= запуск ======================= */
+function boot(){
+  EVENTS=(DATA.events||[]).map(e=>({...e,end:e.end||e.start,specialty:e.specialty||[],language:e.language||[],faculty:e.faculty||[],history:e.history||[],tags:e.tags||[],managers:e.managers||[],fuzzy:!!(e.date_precision&&e.date_precision!=='day')}));
+  EVENTS.sort((a,b)=>a.start.localeCompare(b.start)||(a.time||'').localeCompare(b.time||'')||a.title.localeCompare(b.title,'ru'));
+  readHash();
+  $('#gate').hidden=true; $('#app').hidden=false;
+  $('#built').textContent=DATA.built_at?'Данные обновлены: '+fmtDT(DATA.built_at):'';
+  buildFilters(); render();
+  if(S.open) openEvent(S.open);
+}
+
+/* ======================= фильтры ======================= */
+function sourceLabel(s){ if(!s)return 'вручную'; if(s==='manual')return 'вручную'; const [k,v]=s.split(':'); return ({sheet:'таблица',site:'сайт',chat:'чат'}[k]||k)+(v?': '+v:'') }
+function buildFilters(){
+  const counts={};
+  for(const k of Object.keys(S.f)) counts[k]={};
+  for(const e of EVENTS){
+    const add=(k,v)=>{if(v===undefined||v===null||v==='')return;counts[k][v]=(counts[k][v]||0)+1};
+    add('type',e.type); e.specialty.forEach(v=>add('specialty',v)); add('status',e.status); add('arthrex',e.arthrex||'none'); add('format',e.format); add('country',e.country||'—'); add('line',e.line); e.managers.forEach(v=>add('managers',v)); add('source',e.source);
+  }
+  for(const box of document.querySelectorAll('.chips')){
+    const k=box.dataset.f; const dict=L[k];
+    let keys=Object.keys(counts[k]);
+    if(k==='type') keys.sort((a,b)=>TYPE_ORDER.indexOf(a)-TYPE_ORDER.indexOf(b));
+    else if(dict) keys.sort((a,b)=>Object.keys(dict).indexOf(a)-Object.keys(dict).indexOf(b));
+    else if(k==='country'||k==='managers') keys.sort((a,b)=>counts[k][b]-counts[k][a]||a.localeCompare(b,'ru'));
+    else keys.sort((a,b)=>a.localeCompare(b,'ru'));
+    box.innerHTML=keys.map(v=>`<button type="button" class="chip" data-v="${esc(v)}" aria-pressed="false">${k==='type'?`<span class="dot" style="background:var(--c-${esc(v)})"></span>`:''}${esc(dict?dict[v]||v:k==='source'?sourceLabel(v):v)}<span class="n">${counts[k][v]}</span></button>`).join('');
+    box.addEventListener('click',ev=>{const b=ev.target.closest('.chip');if(!b)return;const v=b.dataset.v;S.f[k].has(v)?S.f[k].delete(v):S.f[k].add(v);b.classList.toggle('on');b.setAttribute('aria-pressed',b.classList.contains('on'));render()});
+  }
+  $('#reset').onclick=()=>{for(const k in S.f)S.f[k].clear();document.querySelectorAll('.chip.on').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-pressed','false')});$('#q').value='';S.q='';render()};
+}
+function matches(e){
+  for(const k in S.f){
+    const set=S.f[k]; if(!set.size) continue;
+    const val=k==='specialty'?e.specialty:k==='managers'?e.managers:[k==='arthrex'?(e.arthrex||'none'):k==='country'?(e.country||'—'):e[k]];
+    if(!val.some(v=>set.has(v))) return false;
+  }
+  if(S.q){
+    const q=S.q.toLowerCase();
+    const hay=[e.title,e.city,e.country,e.venue,e.organizer,e.description,e.notes,e.line,e.program,...(e.managers||[]),...(e.faculty||[]),...(e.tags||[])].join(' ').toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  return true;
+}
+const filtered=()=>EVENTS.filter(matches);
+const onDay=(list,d)=>list.filter(e=>!e.fuzzy&&e.start<=d&&e.end>=d);
+const fuzzyIn=(list,y,m)=>list.filter(e=>e.fuzzy&&e.start.slice(0,7)===`${y}-${pad(m+1)}`);
+function fuzzyLabel(e){const d=parse(e.start);if(e.date_precision==='season')return 'сезон · '+MONTHS[d.getMonth()]+'–'+MONTHS[parse(e.end).getMonth()]+' '+d.getFullYear();return 'дата уточняется · '+MONTHS[d.getMonth()]+' '+d.getFullYear()}
+
+/* ======================= рендер ======================= */
+function render(){
+  const list=filtered(); const v=$('#view');
+  const n=Object.values(S.f).reduce((a,s)=>a+s.size,0)+(S.q?1:0);
+  $('#fcount').hidden=!n; $('#fcount').textContent=n;
+  document.querySelectorAll('#views button').forEach(b=>{const on=b.dataset.v===S.view;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  $('#fbtn').setAttribute('aria-expanded',document.body.classList.contains('filters'));
+  const c=S.cursor;
+  if(S.view==='month'){ $('#period').textContent=`${MONTHS[c.getMonth()]} ${c.getFullYear()}`; v.innerHTML=renderMonth(list); }
+  else if(S.view==='week'){ const a=startOfWeek(c),b=addDays(a,6); $('#period').textContent=`${a.getDate()} ${MONTHS_G[a.getMonth()]} – ${b.getDate()} ${MONTHS_G[b.getMonth()]}`; v.innerHTML=renderWeek(list); }
+  else if(S.view==='day'){ $('#period').textContent=`${c.getDate()} ${MONTHS_G[c.getMonth()]}, ${DOW_L[(c.getDay()+6)%7]}`; v.innerHTML=renderDay(list); }
+  else { $('#period').textContent=`с ${c.getDate()} ${MONTHS_G[c.getMonth()]} ${c.getFullYear()}`; v.innerHTML=renderList(list); }
+  const up=list.filter(e=>e.end>=todayISO).length;
+  $('#stat').textContent=`Показано: ${list.length} из ${EVENTS.length} · предстоящих: ${up}`;
+  writeHash();
+}
+function chip(e,cont){
+  const lbl=[L.type[e.type]||e.type,e.title,fmtRange(e),e.status==='soldout'?'мест нет':'',e.status==='cancelled'?'отменено':''].filter(Boolean).join(', ');
+  return `<button type="button" class="ev ${cont?'cont':''} ${e.status==='cancelled'?'cancelled':''} ${S.open===e.id?'sel':''}" style="--c:var(--c-${e.type})" data-id="${e.id}" title="${esc(e.title)}" aria-label="${esc(lbl)}">${cont?'→ ':''}${e.time&&!cont?`<b>${e.time}</b> `:''}${esc(e.title)}</button>`;
+}
+function renderMonth(list){
+  const y=S.cursor.getFullYear(),m=S.cursor.getMonth();
+  const first=new Date(y,m,1), start=startOfWeek(first);
+  const cells=[]; const MAX=4;
+  for(let i=0;i<42;i++){
+    const d=addDays(start,i); const ds=iso(d);
+    if(i===35 && d.getMonth()!==m) break;
+    const evs=onDay(list,ds);
+    const cls=['cell',d.getMonth()!==m?'out':'',ds===todayISO?'today':'',(i%7)>=5?'wknd':''].join(' ');
+    const shown=evs.slice(0,MAX), more=evs.length-shown.length;
+    cells.push(`<div class="${cls}" data-d="${ds}"><button type="button" class="dnum" aria-label="${d.getDate()} ${MONTHS_G[d.getMonth()]}, мероприятий: ${evs.length}">${d.getDate()}</button>
+      ${shown.map(e=>chip(e,e.start!==ds)).join('')}${more>0?`<button type="button" class="more" aria-label="Ещё ${more}, открыть день">+${more} ещё</button>`:''}
+      <div class="dots">${evs.slice(0,6).map(e=>`<i style="--c:var(--c-${e.type})"></i>`).join('')}</div></div>`);
+  }
+  const fz=fuzzyIn(list,y,m);
+  const strip=fz.length?`<div class="fuzzy"><span class="fz-t">Без точной даты в этом месяце:</span>${fz.map(e=>chip(e,false)).join('')}</div>`:'';
+  return strip+`<div class="mgrid">${DOW.map(d=>`<div class="dow">${d}</div>`).join('')}${cells.join('')}</div>`;
+}
+function card(e,showDate){
+  const where=[e.city,e.country].filter(Boolean).join(', ')||(e.format==='online'?'онлайн':'');
+  return `<div class="card ${e.status==='cancelled'?'cancelled':''}" style="--c:var(--c-${e.type})" data-id="${e.id}" role="button" tabindex="0" aria-label="${esc(e.title)}, ${esc(fmtRange(e))}">
+    <div class="t">${esc(e.title)}</div>
+    <div class="m"><span class="pill type">${L.type[e.type]||e.type}</span><span class="pill s-${e.status}">${L.status[e.status]||e.status}</span>${e.arthrex&&e.arthrex!=='none'?`<span class="pill ax">Arthrex: ${L.arthrex[e.arthrex]}</span>`:''}</div>
+    <div class="m">${showDate?`<span>${ico('cal')}${fmtRange(e)}</span>`:e.time?`<span>${ico('clock')}${e.time}</span>`:''}${where?`<span>${ico('pin')}${esc(where)}</span>`:''}${e.organizer?`<span>${ico('org')}${esc(e.organizer)}</span>`:''}</div>
+  </div>`;
+}
+function renderWeek(list){
+  const a=startOfWeek(S.cursor); let out='';
+  for(let i=0;i<7;i++){const d=addDays(a,i),ds=iso(d);const evs=onDay(list,ds);
+    out+=`<div class="wcol ${ds===todayISO?'today':''}"><h4>${DOW_L[i]}, <b>${d.getDate()}</b></h4>${evs.map(e=>card(e,false)).join('')||'<div style="color:var(--muted);font-size:13px">Нет мероприятий</div>'}</div>`}
+  return `<div class="wgrid">${out}</div>`;
+}
+function renderDay(list){
+  const evs=onDay(list,iso(S.cursor));
+  return evs.length?`<div style="max-width:760px">${evs.map(e=>card(e,true)).join('')}</div>`:`<div class="empty">На этот день мероприятий нет.<br><button type="button" class="link" style="margin-top:10px" onclick="S.view='list';render()">Показать ближайшие списком</button></div>`;
+}
+function renderList(list){
+  const from=iso(S.cursor);
+  let evs=list.filter(e=>S.past?true:e.end>=from);
+  if(!evs.length) return `<div class="empty">Ничего не найдено. Попробуйте снять фильтры${S.past?'':' или включить «прошедшие»'}.</div>`;
+  let out='',cur='';
+  for(const e of evs){
+    const d=parse(e.start); const key=`${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    if(key!==cur){cur=key;out+=`<h2>${key}</h2>`}
+    out+=`<div class="lrow"><div class="ldate">${e.fuzzy?'≈':d.getDate()+' '+MONTHS_G[d.getMonth()].slice(0,3)}<small>${e.fuzzy?'дата уточняется':e.end!==e.start?'до '+parse(e.end).getDate()+' '+MONTHS_G[parse(e.end).getMonth()].slice(0,3):DOW_L[(d.getDay()+6)%7]}</small></div>${card(e,false)}</div>`;
+  }
+  return `<div class="list" style="max-width:860px">${out}</div>`;
+}
+
+/* ======================= карточка ======================= */
+let lastFocus=null;
+function openEvent(id){
+  const e=EVENTS.find(x=>x.id===id); if(!e) return;
+  if(!document.body.classList.contains('open')) lastFocus=document.activeElement;
+  S.open=id; writeHash();
+  const where=[e.venue,e.city,e.country].filter(Boolean).join(', ');
+  const row=(k,v)=>v?`<dt>${k}</dt><dd>${v}</dd>`:'';
+  const link=u=>u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//,'').slice(0,60))}</a>`:'';
+  const deadlinePast=e.deadline&&e.deadline<todayISO;
+  $('#drawer').innerHTML=`
+    <div class="dh" style="--c:var(--c-${e.type})">
+      <button class="iconbtn close" id="dclose" aria-label="Закрыть (Esc)" title="Закрыть (Esc)">${ico('x')}</button>
+      <div><span class="pill type" style="--c:var(--c-${e.type})">${L.type[e.type]||e.type}</span> <span class="pill s-${e.status}">${L.status[e.status]||e.status}</span> ${e.arthrex&&e.arthrex!=='none'?`<span class="pill ax">Arthrex: ${L.arthrex[e.arthrex]}</span>`:''}</div>
+      <h2 id="dtitle">${esc(e.title)}</h2>
+      <div class="when">${fmtRange(e)}${e.status==='soldout'?' · <span class="pill s-soldout">мест нет</span>':''}</div>
+      ${e.demo?'<div class="demo">Демонстрационная запись — будет заменена реальными данными</div>':''}
+    </div>
+    <div class="db">
+      <dl class="kv">
+        ${row('Где',esc(where)||(e.format==='online'?'Онлайн':''))}
+        ${row('Формат',L.format[e.format])}
+        ${row('Специализация',e.specialty.map(s=>L.specialty[s]||s).join(', '))}
+        ${row('Организатор',esc(e.organizer))}
+        ${row('Направление',esc(e.line))}
+        ${row('Менеджер',e.managers.map(esc).join(', '))}
+        ${row('Участники',esc(e.participants))}
+        ${row('Сайт',link(e.url))}
+        ${row('Регистрация',link(e.registration_url))}
+        ${row('Дедлайн',e.deadline?`${fmtRange({start:e.deadline})}${deadlinePast?' <span class="pill s-cancelled">прошёл</span>':''}`:'')}
+        ${row('Стоимость',esc(e.price))}
+        ${row('Язык',e.language.join(', ').toUpperCase())}
+        ${row('Контакты',esc(e.contacts))}
+        ${row('Метки',e.tags.map(t=>`<span class="pill">${esc(t)}</span>`).join(' '))}
+      </dl>
+      ${e.program||e.program_url?`<div class="sec"><h3>Программа</h3>${e.program_url?`<div><a href="${esc(e.program_url)}" target="_blank" rel="noopener">Открыть программу</a></div>`:''}${e.program?`<div class="desc" style="margin-top:6px">${esc(e.program)}</div>`:''}</div>`:''}
+      ${e.faculty.length?`<div class="sec"><h3>Спикеры</h3><div>${e.faculty.map(esc).join('<br>')}</div></div>`:''}
+      ${e.description?`<div class="sec"><h3>Описание</h3><div class="desc">${esc(e.description)}</div></div>`:''}
+      ${e.notes?`<div class="sec"><h3>Статус в таблице / заметки</h3><div class="desc">${esc(e.notes)}</div></div>`:''}
+      ${e.row_color?`<div class="sec"><h3>Цвет строки в таблице</h3><span class="swatch" style="background:${esc(e.row_color)}"></span> ${esc(ROWCOLOR[e.row_color]||e.row_color)}</div>`:''}
+      <div class="sec"><h3>История изменений</h3><div class="hist">
+        ${e.history.slice().reverse().map(h=>`<div><time>${fmtDT(h.at)}</time>${esc(h.field)}: ${esc(h.from||'—')} → <b>${esc(h.to)}</b></div>`).join('')}
+        <div><time>${fmtDT(e.created_at)}</time>добавлено · источник: ${esc(sourceLabel(e.source))}${e.source_url?` · <a href="${esc(e.source_url)}" target="_blank" rel="noopener">первоисточник</a>`:''}</div>
+      </div></div>
+    </div>
+    <div class="df">
+      <button class="btn sm" id="ics">В мой календарь (.ics)</button>
+      <button class="btn ghost sm" id="copy">Скопировать ссылку</button>
+      <span class="upd">обновлено ${fmtDT(e.updated_at)}</span>
+    </div>`;
+  document.body.classList.add('open');
+  $('#drawer').focus();
+  $('#dclose').onclick=closeEvent;
+  $('#ics').onclick=()=>downloadICS(e);
+  $('#copy').onclick=ev=>{navigator.clipboard.writeText(location.href).then(()=>{ev.target.textContent='Скопировано';setTimeout(()=>ev.target.textContent='Скопировать ссылку',1500)})};
+  document.querySelectorAll('.ev.sel').forEach(x=>x.classList.remove('sel'));
+  document.querySelectorAll(`.ev[data-id="${CSS.escape(id)}"]`).forEach(x=>x.classList.add('sel'));
+}
+function closeEvent(){if(!document.body.classList.contains('open'))return;document.body.classList.remove('open');S.open=null;writeHash();document.querySelectorAll('.ev.sel').forEach(x=>x.classList.remove('sel'));if(lastFocus&&document.contains(lastFocus))lastFocus.focus();lastFocus=null}
+function downloadICS(e){
+  const d=s=>s.replace(/-/g,'');
+  const endExcl=iso(addDays(parse(e.end),1));
+  const dt=e.time&&e.start===e.end?`DTSTART:${d(e.start)}T${e.time.replace(':','')}00\r\nDTEND:${d(e.start)}T${pad((+e.time.slice(0,2)+1)%24)}${e.time.slice(3)}00`:`DTSTART;VALUE=DATE:${d(e.start)}\r\nDTEND;VALUE=DATE:${d(endExcl)}`;
+  const txt=s=>String(s||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/[,;]/g,m=>'\\'+m);
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Arthrex MedEd//Calendar//RU','BEGIN:VEVENT',`UID:${e.id}@arthrex-meded`,`DTSTAMP:${d(todayISO)}T000000Z`,dt,`SUMMARY:${txt(e.title)}`,`LOCATION:${txt([e.venue,e.city,e.country].filter(Boolean).join(', '))}`,`DESCRIPTION:${txt((e.description||'')+(e.url?'\n'+e.url:''))}`,e.url?`URL:${e.url}`:'','END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download=e.id+'.ics';a.click();
+}
+
+/* ======================= навигация ======================= */
+function shift(n){
+  const c=S.cursor;
+  if(S.view==='month'||S.view==='list') S.cursor=new Date(c.getFullYear(),c.getMonth()+n,1);
+  else if(S.view==='week') S.cursor=addDays(c,7*n);
+  else S.cursor=addDays(c,n);
+  render();
+}
+$('#prev').onclick=()=>shift(-1); $('#next').onclick=()=>shift(1);
+$('#today').onclick=()=>{S.cursor=new Date();S.cursor.setHours(0,0,0,0);render()};
+$('#views').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.view=b.dataset.v;render()};
+$('#q').oninput=e=>{S.q=e.target.value.trim();render()};
+$('#showPast').onchange=e=>{S.past=e.target.checked;render()};
+$('#fbtn').onclick=()=>{document.body.classList.add('filters');$('#fbtn').setAttribute('aria-expanded','true');$('#reset').focus()};
+$('#fclose').onclick=()=>{document.body.classList.remove('filters');$('#fbtn').setAttribute('aria-expanded','false');$('#fbtn').focus()};
+$('#overlay').onclick=closeEvent;
+$('#period').onclick=()=>{
+  const inp=document.createElement('input');inp.type='month';inp.value=`${S.cursor.getFullYear()}-${pad(S.cursor.getMonth()+1)}`;
+  inp.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.appendChild(inp);
+  inp.onchange=()=>{if(inp.value){const [y,m]=inp.value.split('-').map(Number);S.cursor=new Date(y,m-1,1);render()}inp.remove()};
+  inp.onblur=()=>setTimeout(()=>inp.remove(),300);
+  if(inp.showPicker){try{inp.showPicker()}catch(e){inp.focus();inp.click()}}else{inp.focus();inp.click()}
+};
+$('#view').addEventListener('click',e=>{
+  const ev=e.target.closest('[data-id]'); if(ev){openEvent(ev.dataset.id);e.stopPropagation();return}
+  const cell=e.target.closest('.cell'); if(cell){S.cursor=parse(cell.dataset.d);S.view='day';render();$('#view').focus()}
+});
+$('#view').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const t=e.target.closest('.card[data-id]'); if(t){e.preventDefault();openEvent(t.dataset.id)}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeEvent();if(document.body.classList.contains('filters'))$('#fclose').click();return}
+  if(document.body.classList.contains('open')){
+    if(e.key==='Tab'){const f=[...$('#drawer').querySelectorAll('button,a[href],input,[tabindex="0"]')].filter(x=>!x.disabled);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('#drawer'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
+    return;
+  }
+  if(e.target.matches('input,button,[role="button"]')&&(e.key==='ArrowLeft'||e.key==='ArrowRight')&&e.target.matches('input')) return;
+  if(e.target.matches('input')) return;
+  else if(e.key==='ArrowLeft') shift(-1); else if(e.key==='ArrowRight') shift(1);
+  else if(e.key==='t'||e.key==='е') $('#today').click();
+});
+window.addEventListener('hashchange',()=>{if(!DATA)return;readHash();render();if(S.open)openEvent(S.open)});
+
+/* автоматический вход, если пароль сохранён в этой вкладке */
+const saved=sessionStorage.getItem('ak_pw');
+if(saved) tryLogin(saved,true);
+</script>
+</body>
+</html>

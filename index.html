@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex, nofollow">
 <title>EventsAR — календарь мероприятий</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230575D6%27/%3E%3Crect x=%277%27 y=%279%27 width=%2718%27 height=%2716%27 rx=%272%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272.2%27/%3E%3Cpath d=%27M7 14h18M12 6v5M20 6v5%27 stroke=%27%23fff%27 stroke-width=%272.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
@@ -28,7 +28,7 @@ html,body{margin:0;height:100%;background:var(--panel-2);color:var(--text);font-
 .skip:focus{top:8px}
 svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-button,input,select{font:inherit;color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:var(--blue)}
 [hidden]{display:none!important}
@@ -229,6 +229,13 @@ body.open #drawer{transform:none}
 .csend:hover{background:#C4643F}
 .csend[disabled]{opacity:.5;cursor:progress}
 .chint{font-size:11px;color:var(--muted);margin-top:6px}
+.cattach{width:44px;height:44px;border:0;color:var(--muted);flex:none}
+.cattach:hover{color:var(--text)}
+.cfile{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 6px 6px 8px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--panel-2)}
+.cfile img{width:40px;height:40px;object-fit:cover;border-radius:6px;background:#fff}
+.cfile span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfile .iconbtn{width:32px;height:32px;border:0}
+.cm .cimg{display:block;max-width:100%;max-height:260px;border-radius:10px;margin:2px 0 6px;background:#fff}
 .btn.ask{display:inline-flex;align-items:center;gap:6px;border-color:#EBCDBF;color:#9A4A2C;background:#FBF3EF}
 .btn.ask:hover{background:#F5E3DA}
 .btn.ask svg.spark{width:16px;height:16px;color:#D97757}
@@ -389,7 +396,8 @@ body.open #drawer{transform:none}
     <div class="cctx" id="cctx" hidden><span></span><button type="button" class="iconbtn" id="cctxx" aria-label="Убрать привязку к мероприятию"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <form class="cform" id="cform">
       <input id="cname" placeholder="Как вас зовут?" aria-label="Ваше имя" autocomplete="name" maxlength="40">
-      <div class="crow"><textarea id="ctext" rows="1" placeholder="Напишите Клоду…" aria-label="Сообщение" maxlength="1500" required></textarea><button class="csend" type="submit" aria-label="Отправить"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/></svg></button></div>
+      <div class="cfile" id="cfilechip" hidden><img alt="" id="cfilethumb"><span id="cfilename"></span><button type="button" class="iconbtn" id="cfilex" aria-label="Убрать картинку"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="crow"><input type="file" id="cfile" accept="image/*" class="vh" tabindex="-1" aria-hidden="true"><button type="button" class="iconbtn cattach" id="cattach" aria-label="Прикрепить скриншот" title="Прикрепить скриншот"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.1-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.8 1.8 0 0 1-2.6-2.6l7.8-7.8"/></svg></button><textarea id="ctext" rows="1" placeholder="Напишите Клоду…" aria-label="Сообщение" maxlength="1500"></textarea><button class="csend" type="submit" aria-label="Отправить"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/></svg></button></div>
       <div class="chint">Сообщения видят Клод и администратор календаря. Ответ появится здесь — окно можно закрыть и вернуться.</div>
     </form>
   </section>
@@ -779,14 +787,34 @@ function chatInit(){
   $('#cctxx').onclick=()=>{CHAT.ctx=null;showCtx()};
   $('#cform').onsubmit=e=>{e.preventDefault();sendChat()};
   $('#ctext').addEventListener('input',autoGrow);
+  $('#cattach').onclick=()=>$('#cfile').click();
+  $('#cfile').onchange=e=>attach(e.target.files[0]);
+  $('#cfilex').onclick=clearFile;
+  $('#ctext').addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();attach(it.getAsFile())}});
   $('#ctext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!matchMedia('(pointer:coarse)').matches){e.preventDefault();sendChat()}});
   $('#cmsgs').addEventListener('click',e=>{const b=e.target.closest('[data-retry]');if(b)resend(b.dataset.retry)});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollChat()});
   renderChat(); schedulePoll();
 }
-function saveChat(){ls('evar_chat',JSON.stringify(CHAT.msgs.slice(-200)));ls('evar_seen',JSON.stringify(CHAT.seen.slice(-300)));if(CHAT.since)ls('evar_since',CHAT.since);ls('evar_unread',CHAT.unread)}
+function saveChat(){ls('evar_chat',JSON.stringify(CHAT.msgs.slice(-200).map(({blob,...m})=>m)));ls('evar_seen',JSON.stringify(CHAT.seen.slice(-300)));if(CHAT.since)ls('evar_since',CHAT.since);ls('evar_unread',CHAT.unread)}
 function showUnread(){const b=$('#cunread');b.hidden=!CHAT.unread;b.textContent=CHAT.unread;$('#cbtn').setAttribute('aria-label',CHAT.unread?`Написать Клоду, новых ответов: ${CHAT.unread}`:'Написать Клоду')}
 function showCtx(){const c=$('#cctx');c.hidden=!CHAT.ctx;if(CHAT.ctx)c.querySelector('span').textContent='О мероприятии: '+CHAT.ctx.title}
+let cfile=null;
+function readImage(file){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>res(img);img.onerror=rej;img.src=URL.createObjectURL(file)})}
+function toBlob(canvas,q){return new Promise(res=>canvas.toBlob(res,'image/jpeg',q))}
+async function prepImage(file){
+  const img=await readImage(file);
+  const draw=(max)=>{const k=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c};
+  const big=draw(1600), small=draw(320);
+  const blob=await toBlob(big,.82);
+  return {blob,thumb:small.toDataURL('image/jpeg',.7),name:(file.name||'screenshot').replace(/\.[^.]+$/,'')+'.jpg'};
+}
+async function attach(file){
+  if(!file||!file.type.startsWith('image/')) return;
+  try{cfile=await prepImage(file)}catch(e){cfile=null;return}
+  $('#cfilethumb').src=cfile.thumb;$('#cfilename').textContent=cfile.name+' · '+Math.round(cfile.blob.size/1024)+' КБ';$('#cfilechip').hidden=false;$('#ctext').focus();
+}
+function clearFile(){cfile=null;$('#cfile').value='';$('#cfilechip').hidden=true}
 function autoGrow(){const t=$('#ctext');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px'}
 let chatFocus=null;
 function openChat(ctx){
@@ -800,26 +828,28 @@ function fmtT(s){const d=new Date(s);return isNaN(d)?'':`${pad(d.getHours())}:${
 const linkify=t=>t.replace(/https?:\/\/[^\s<]+/g,u=>{const m=u.match(/^(.*?)([.,;:!?)»]+)?$/);return `<a href="${m[1]}" target="_blank" rel="noopener">${m[1]}</a>${m[2]||''}`});
 function renderChat(){
   const box=$('#cmsgs');
-  box.innerHTML=CHAT.msgs.map(m=>`<div class="cm ${m.role==='ai'?'ai':'me'} ${m.status==='fail'?'fail':''}">${linkify(esc(m.text))}${m.ctx?`<div class="st">о мероприятии: ${esc(m.ctx.title)}</div>`:''}<time>${m.role==='ai'?'Клод · ':''}${fmtT(m.at)}</time>${m.status==='fail'?`<span class="st">Не доставлено · <button type="button" data-retry="${esc(m.id)}">повторить</button></span>`:m.status==='sending'?'<span class="st">отправляю…</span>':''}</div>`).join('');
+  box.innerHTML=CHAT.msgs.map(m=>`<div class="cm ${m.role==='ai'?'ai':'me'} ${m.status==='fail'?'fail':''}">${m.img?`<img class="cimg" src="${m.img}" alt="Прикреплённая картинка">`:''}${linkify(esc(m.text))}${m.ctx?`<div class="st">о мероприятии: ${esc(m.ctx.title)}</div>`:''}<time>${m.role==='ai'?'Клод · ':''}${fmtT(m.at)}</time>${m.status==='fail'?`<span class="st">Не доставлено · <button type="button" data-retry="${esc(m.id)}">повторить</button></span>`:m.status==='sending'?'<span class="st">отправляю…</span>':''}</div>`).join('');
   if(thinking()){const l=CHAT.msgs[CHAT.msgs.length-1];const long=Date.now()-new Date(l.at)>15*60000;
     box.insertAdjacentHTML('beforeend',`<div class="cm ai think" role="status"><span class="walker" aria-hidden="true">${SPARK}</span><span class="tx">${long?'Клод пока не ответил.<small>Ответ придёт сюда — окно можно закрыть и вернуться.</small>':`<span id="cthink">${THINK[CHAT.ph]}</span><small>Клод ищет ответ</small>`}</span></div>`)}
   box.scrollTop=box.scrollHeight;
 }
 async function postMsg(m){
   const body=JSON.stringify({id:m.id,cid:CHAT.cid,name:CHAT.name,text:m.text,ctx:m.ctx||null,page:location.hash,ua:matchMedia('(max-width:700px)').matches?'телефон':'десктоп',at:m.at});
-  const r=await fetch(`${NTFY}/${CHAT.topic}`,{method:'POST',body});
+  const r=m.blob?await fetch(`${NTFY}/${CHAT.topic}?message=${encodeURIComponent(body)}&filename=${encodeURIComponent(m.fname||'screenshot.jpg')}`,{method:'PUT',body:m.blob})
+               :await fetch(`${NTFY}/${CHAT.topic}`,{method:'POST',body});
   if(!r.ok) throw new Error('ntfy '+r.status);
 }
 async function sendChat(){
-  const t=$('#ctext'); const text=t.value.trim(); if(!text||!CHAT.topic) return;
+  const t=$('#ctext'); const text=t.value.trim(); if((!text&&!cfile)||!CHAT.topic) return;
   const name=$('#cname').value.trim(); if(name&&name!==CHAT.name){CHAT.name=name;ls('evar_name',name)} $('#cname').hidden=!!CHAT.name;
-  const m={id:rid(),role:'me',text,ctx:CHAT.ctx,at:new Date().toISOString(),status:'sending'};
+  const m={id:rid(),role:'me',text:text||'(скриншот)',ctx:CHAT.ctx,at:new Date().toISOString(),status:'sending'};
+  if(cfile){m.img=cfile.thumb;m.blob=cfile.blob;m.fname=cfile.name;clearFile()}
   CHAT.msgs.push(m); t.value='';autoGrow(); renderChat();
   try{await postMsg(m);delete m.status}catch(e){m.status='fail'}
   saveChat(); renderChat(); t.focus();
 }
 async function resend(id){const m=CHAT.msgs.find(x=>x.id===id);if(!m)return;m.status='sending';renderChat();try{await postMsg(m);delete m.status}catch(e){m.status='fail'}saveChat();renderChat()}
-function schedulePoll(){clearTimeout(CHAT.timer);CHAT.timer=setTimeout(async()=>{await pollChat();schedulePoll()},$('#chat').hidden?45000:thinking()?2500:4000)}
+function schedulePoll(){clearTimeout(CHAT.timer);CHAT.timer=setTimeout(async()=>{await pollChat();schedulePoll()},$('#chat').hidden?60000:thinking()?5000:7000)}
 async function pollChat(){
   if(!CHAT.topic||document.hidden) return;
   try{

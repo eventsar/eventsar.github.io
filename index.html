@@ -188,6 +188,41 @@ body.open #drawer{transform:none}
 .swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15);margin-right:4px}
 .demo{background:#FFF3E0;color:#8A5A00;font-size:12px;padding:6px 10px;border-radius:6px;margin-top:10px}
 .mobonly{display:none}
+/* ---------- чат с Клодом ---------- */
+#cbtn{position:fixed;right:20px;bottom:20px;z-index:29;width:56px;height:56px;border-radius:50%;border:0;background:#D97757;color:#fff;box-shadow:0 6px 20px rgba(217,119,87,.45);display:flex;align-items:center;justify-content:center;transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease)}
+#cbtn:hover{background:#C4643F;transform:translateY(-1px);box-shadow:0 8px 24px rgba(217,119,87,.5)}
+#cbtn svg.spark{width:30px;height:30px}
+#cbtn .badge{position:absolute;top:-3px;right:-3px;background:var(--navy);margin:0;border:2px solid #fff;line-height:16px}
+#chat{position:fixed;right:20px;bottom:88px;z-index:40;width:380px;max-width:calc(100% - 40px);height:min(620px,calc(100vh - 110px));background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(39,69,92,.25);border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+#chat[hidden]{display:none}
+.ch{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;border-bottom:1px solid var(--line);background:#FBF3EF}
+.cav{width:36px;height:36px;border-radius:50%;background:#D97757;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.cav svg.spark{width:20px;height:20px}
+.ch b{display:block;font-size:15px;line-height:1.2}
+.ch small{color:var(--muted);font-size:12px}
+.ch .iconbtn{margin-left:auto;border:0;background:transparent}
+.cmsgs{flex:1;overflow:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:8px;background:var(--panel-2);-webkit-overflow-scrolling:touch}
+.cm{max-width:86%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.cm.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.cm.ai{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.cm.me.fail{background:var(--bad)}
+.cm time,.cm .st{display:block;font-size:11px;opacity:.75;margin-top:3px}
+.cm .st button{background:none;border:0;color:inherit;text-decoration:underline;padding:0;font-size:11px}
+.cctx{display:flex;align-items:center;gap:6px;padding:6px 14px;font-size:12px;color:var(--muted);background:#fff;border-top:1px solid var(--line)}
+.cctx span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.cctx .iconbtn{width:32px;height:32px;border:0}
+.cform{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
+#cname{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;min-height:40px;outline:none}
+.crow{display:flex;gap:8px;align-items:flex-end}
+#ctext{flex:1;resize:none;padding:10px 12px;border:1px solid var(--line);border-radius:12px;min-height:44px;max-height:140px;line-height:1.4;outline:none;background:var(--panel-2)}
+#ctext:focus,#cname:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(5,117,214,.15)}
+.csend{width:44px;height:44px;border-radius:50%;border:0;background:#D97757;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none;transition:background var(--dur-fast) var(--ease)}
+.csend:hover{background:#C4643F}
+.csend[disabled]{opacity:.5;cursor:progress}
+.chint{font-size:11px;color:var(--muted);margin-top:6px}
+.btn.ask{display:inline-flex;align-items:center;gap:6px;border-color:#EBCDBF;color:#9A4A2C;background:#FBF3EF}
+.btn.ask:hover{background:#F5E3DA}
+.btn.ask svg.spark{width:16px;height:16px;color:#D97757}
 #sbtn,.ffoot,#tabbar{display:none}
 .fhead .iconbtn{margin-left:8px}
 #tabbar{position:fixed;left:0;right:0;bottom:0;z-index:22;background:#fff;border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(39,69,92,.06)}
@@ -259,9 +294,13 @@ body.open #drawer{transform:none}
   .dh h2{font-size:18px}
   .db{padding:14px 16px}
   .df{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  #cbtn{right:14px;bottom:calc(74px + env(safe-area-inset-bottom));width:52px;height:52px}
+  #chat{inset:0;width:auto;max-width:none;height:auto;border-radius:0;border:0}
+  body.chat{overflow:hidden}
+  body.chat #cbtn{display:none}
 }
 @media (min-width:1101px){.dots,.agenda{display:none}}
-@media print{header,#filters,footer{display:none}.body{display:block}}
+@media print{header,#filters,footer,#cbtn,#chat,#tabbar{display:none}.body{display:block}}
 </style>
 </head>
 <body>
@@ -333,6 +372,18 @@ body.open #drawer{transform:none}
     <span id="built"></span>
     <span style="margin-left:auto">eventsar · внутренний календарь Arthrex MedEd</span>
   </footer>
+
+  <button type="button" id="cbtn" aria-label="Написать Клоду" title="Написать Клоду" aria-controls="chat" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span class="badge" id="cunread" hidden>0</span></button>
+  <section id="chat" role="dialog" aria-label="Чат с Клодом" hidden>
+    <div class="ch"><span class="cav"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span><div><b>Клод</b><small id="cstatus">помощник календаря · отвечает здесь</small></div><button type="button" class="iconbtn" id="cclose" aria-label="Закрыть чат"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="cmsgs" id="cmsgs" aria-live="polite" aria-label="Сообщения"></div>
+    <div class="cctx" id="cctx" hidden><span></span><button type="button" class="iconbtn" id="cctxx" aria-label="Убрать привязку к мероприятию"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <form class="cform" id="cform">
+      <input id="cname" placeholder="Как вас зовут?" aria-label="Ваше имя" autocomplete="name" maxlength="40">
+      <div class="crow"><textarea id="ctext" rows="1" placeholder="Напишите Клоду…" aria-label="Сообщение" maxlength="1500" required></textarea><button class="csend" type="submit" aria-label="Отправить"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/></svg></button></div>
+      <div class="chint">Сообщения видят Клод и администратор календаря. Ответ появится здесь — окно можно закрыть и вернуться.</div>
+    </form>
+  </section>
 
   <nav id="tabbar" aria-label="Разделы">
     <button type="button" data-v="month" class="on" aria-pressed="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>Месяц</span></button>
@@ -421,6 +472,7 @@ async function tryLogin(pw, silent){
     const blob=await r.json();
     DATA=await decrypt(pw,blob);
     sessionStorage.setItem('ak_pw',pw);
+    CHAT.topic=await chatTopic(pw);
     err.textContent='';
     boot();
   }catch(e){
@@ -442,6 +494,7 @@ function boot(){
   $('#built').textContent=DATA.built_at?'Данные обновлены: '+fmtDT(DATA.built_at):'';
   buildFilters(); render();
   if(S.open) openEvent(S.open);
+  chatInit();
 }
 
 /* ======================= фильтры ======================= */
@@ -619,12 +672,14 @@ function openEvent(id){
     <div class="df">
       <button class="btn sm" id="ics">В мой календарь (.ics)</button>
       <button class="btn ghost sm" id="copy">Скопировать ссылку</button>
+      <button class="btn ghost sm ask" id="dask" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>Спросить Клода</button>
       <span class="upd">обновлено ${fmtDT(e.updated_at)}</span>
     </div>`;
   document.body.classList.add('open');
   $('#drawer').focus();
   $('#dclose').onclick=closeEvent;
   $('#ics').onclick=()=>downloadICS(e);
+  $('#dask').onclick=()=>openChat({id:e.id,title:e.title});
   $('#copy').onclick=ev=>{navigator.clipboard.writeText(location.href).then(()=>{ev.target.textContent='Скопировано';setTimeout(()=>ev.target.textContent='Скопировать ссылку',1500)})};
   document.querySelectorAll('.ev.sel').forEach(x=>x.classList.remove('sel'));
   document.querySelectorAll(`.ev[data-id="${CSS.escape(id)}"]`).forEach(x=>x.classList.add('sel'));
@@ -679,7 +734,7 @@ $('#view').addEventListener('keydown',e=>{
   const t=e.target.closest('.card[data-id]'); if(t){e.preventDefault();openEvent(t.dataset.id)}
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeEvent();closeFilters();return}
+  if(e.key==='Escape'){if(!$('#chat').hidden){closeChat();return}closeEvent();closeFilters();return}
   if(document.body.classList.contains('open')){
     if(e.key==='Tab'){const f=[...$('#drawer').querySelectorAll('button,a[href],input,[tabindex="0"]')].filter(x=>!x.disabled);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('#drawer'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
     return;
@@ -690,6 +745,82 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='t'||e.key==='е') $('#today').click();
 });
 window.addEventListener('hashchange',()=>{if(!DATA)return;readHash();render();if(S.open)openEvent(S.open);else closeEvent()});
+
+/* ======================= чат с Клодом ======================= */
+const NTFY='https://ntfy.sh';
+const CHAT={topic:null,cid:null,name:'',msgs:[],seen:[],since:null,ctx:null,timer:null,unread:0};
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+async function chatTopic(pw){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('eventsar-chat:'+pw));return 'evar-'+[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,24)}
+const rid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+function chatInit(){
+  CHAT.cid=ls('evar_cid')||(ls('evar_cid',rid()),ls('evar_cid'))||rid();
+  CHAT.name=ls('evar_name')||'';
+  try{CHAT.msgs=JSON.parse(ls('evar_chat')||'[]')}catch(e){CHAT.msgs=[]}
+  try{CHAT.seen=JSON.parse(ls('evar_seen')||'[]')}catch(e){CHAT.seen=[]}
+  CHAT.since=ls('evar_since')||null;
+  if(!CHAT.msgs.length) CHAT.msgs.push({id:'hello',role:'ai',at:new Date().toISOString(),text:'Здравствуйте! Я Клод — помогаю вести этот календарь. Напишите, что исправить, добавить или что непонятно. Отвечу здесь же; окно можно закрыть и вернуться позже.'});
+  CHAT.unread=+(ls('evar_unread')||0); showUnread();
+  $('#cname').value=CHAT.name; $('#cname').hidden=!!CHAT.name;
+  $('#cbtn').onclick=()=>$('#chat').hidden?openChat():closeChat();
+  $('#cclose').onclick=closeChat;
+  $('#cctxx').onclick=()=>{CHAT.ctx=null;showCtx()};
+  $('#cform').onsubmit=e=>{e.preventDefault();sendChat()};
+  $('#ctext').addEventListener('input',autoGrow);
+  $('#ctext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!matchMedia('(pointer:coarse)').matches){e.preventDefault();sendChat()}});
+  $('#cmsgs').addEventListener('click',e=>{const b=e.target.closest('[data-retry]');if(b)resend(b.dataset.retry)});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollChat()});
+  renderChat(); schedulePoll();
+}
+function saveChat(){ls('evar_chat',JSON.stringify(CHAT.msgs.slice(-200)));ls('evar_seen',JSON.stringify(CHAT.seen.slice(-300)));if(CHAT.since)ls('evar_since',CHAT.since);ls('evar_unread',CHAT.unread)}
+function showUnread(){const b=$('#cunread');b.hidden=!CHAT.unread;b.textContent=CHAT.unread;$('#cbtn').setAttribute('aria-label',CHAT.unread?`Написать Клоду, новых ответов: ${CHAT.unread}`:'Написать Клоду')}
+function showCtx(){const c=$('#cctx');c.hidden=!CHAT.ctx;if(CHAT.ctx)c.querySelector('span').textContent='О мероприятии: '+CHAT.ctx.title}
+function autoGrow(){const t=$('#ctext');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px'}
+let chatFocus=null;
+function openChat(ctx){
+  if(ctx)CHAT.ctx=ctx; showCtx();
+  if($('#chat').hidden){chatFocus=document.activeElement;$('#chat').hidden=false;document.body.classList.add('chat');$('#cbtn').setAttribute('aria-expanded','true')}
+  CHAT.unread=0;showUnread();saveChat();renderChat();pollChat();
+  (CHAT.name?$('#ctext'):$('#cname')).focus();
+}
+function closeChat(){if($('#chat').hidden)return;$('#chat').hidden=true;document.body.classList.remove('chat');$('#cbtn').setAttribute('aria-expanded','false');if(chatFocus&&document.contains(chatFocus)&&chatFocus!==document.body)chatFocus.focus();else $('#cbtn').focus();chatFocus=null}
+function fmtT(s){const d=new Date(s);return isNaN(d)?'':`${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function renderChat(){
+  const box=$('#cmsgs');
+  box.innerHTML=CHAT.msgs.map(m=>`<div class="cm ${m.role==='ai'?'ai':'me'} ${m.status==='fail'?'fail':''}">${esc(m.text)}${m.ctx?`<div class="st">о мероприятии: ${esc(m.ctx.title)}</div>`:''}<time>${m.role==='ai'?'Клод · ':''}${fmtT(m.at)}</time>${m.status==='fail'?`<span class="st">Не доставлено · <button type="button" data-retry="${esc(m.id)}">повторить</button></span>`:m.status==='sending'?'<span class="st">отправляю…</span>':''}</div>`).join('');
+  box.scrollTop=box.scrollHeight;
+}
+async function postMsg(m){
+  const body=JSON.stringify({id:m.id,cid:CHAT.cid,name:CHAT.name,text:m.text,ctx:m.ctx||null,page:location.hash,ua:matchMedia('(max-width:700px)').matches?'телефон':'десктоп',at:m.at});
+  const r=await fetch(`${NTFY}/${CHAT.topic}`,{method:'POST',body});
+  if(!r.ok) throw new Error('ntfy '+r.status);
+}
+async function sendChat(){
+  const t=$('#ctext'); const text=t.value.trim(); if(!text||!CHAT.topic) return;
+  const name=$('#cname').value.trim(); if(name&&name!==CHAT.name){CHAT.name=name;ls('evar_name',name)} $('#cname').hidden=!!CHAT.name;
+  const m={id:rid(),role:'me',text,ctx:CHAT.ctx,at:new Date().toISOString(),status:'sending'};
+  CHAT.msgs.push(m); t.value='';autoGrow(); renderChat();
+  try{await postMsg(m);delete m.status}catch(e){m.status='fail'}
+  saveChat(); renderChat(); t.focus();
+}
+async function resend(id){const m=CHAT.msgs.find(x=>x.id===id);if(!m)return;m.status='sending';renderChat();try{await postMsg(m);delete m.status}catch(e){m.status='fail'}saveChat();renderChat()}
+function schedulePoll(){clearTimeout(CHAT.timer);CHAT.timer=setTimeout(async()=>{await pollChat();schedulePoll()},$('#chat').hidden?45000:4000)}
+async function pollChat(){
+  if(!CHAT.topic||document.hidden) return;
+  try{
+    const r=await fetch(`${NTFY}/${CHAT.topic}-r/json?poll=1&since=${CHAT.since?Math.max(0,+CHAT.since-1):'all'}`,{cache:'no-store'});
+    if(!r.ok) return;
+    const txt=await r.text(); let added=0;
+    for(const line of txt.split('\n')){
+      if(!line.trim()) continue; let m; try{m=JSON.parse(line)}catch(e){continue}
+      if(m.event!=='message'||CHAT.seen.includes(m.id)) continue;
+      CHAT.seen.push(m.id); CHAT.since=String(m.time);
+      let p; try{p=JSON.parse(m.message)}catch(e){p={to:'*',text:m.message}}
+      if(p.to!=='*'&&p.to!==CHAT.cid) continue;
+      CHAT.msgs.push({id:p.id||m.id,role:'ai',text:p.text||'',at:p.at||new Date(m.time*1000).toISOString()}); added++;
+    }
+    if(added){if($('#chat').hidden){CHAT.unread+=added;showUnread()}saveChat();renderChat();$('#cstatus').textContent='помощник календаря · отвечает здесь'}
+  }catch(e){}
+}
 
 /* автоматический вход, если пароль сохранён в этой вкладке */
 const saved=sessionStorage.getItem('ak_pw');

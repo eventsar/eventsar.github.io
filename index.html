@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>eventsar · календарь мероприятий</title>
+<title>EventsAR — календарь мероприятий</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230575D6%27/%3E%3Crect x=%277%27 y=%279%27 width=%2718%27 height=%2716%27 rx=%272%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272.2%27/%3E%3Cpath d=%27M7 14h18M12 6v5M20 6v5%27 stroke=%27%23fff%27 stroke-width=%272.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
 <meta name="theme-color" content="#0575D6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,8 +37,8 @@ a{color:var(--blue)}
 #gate{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#FFFFFF 0%,#EDF0F2 100%)}
 .gate-card{width:100%;max-width:400px;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:32px 28px;border-top:4px solid var(--blue)}
 .brand{display:flex;align-items:baseline;gap:10px}
-.mark{font-weight:700;font-size:22px;color:var(--blue);letter-spacing:-.02em}
-.mark{font-size:24px}
+.mark{font-weight:800;font-size:26px;color:var(--navy);letter-spacing:-.045em;line-height:1;font-family:Figtree,system-ui,sans-serif}
+.mark b{font-weight:800;color:var(--blue)}
 .sub{color:var(--muted);font-weight:500;font-size:14px}
 .gate-card h1{font-size:20px;margin:18px 0 6px;font-weight:600}
 .gate-card p{color:var(--muted);margin:0 0 18px;font-size:14px}
@@ -168,6 +168,10 @@ body.open #drawer{transform:none}
 .dh .close{position:absolute;right:14px;top:14px}
 .dh h2{margin:8px 0 6px;font-size:20px;line-height:1.25;padding-right:40px}
 .dh .when{font-size:15px;font-weight:600;color:var(--navy)}
+.dimg{display:block;margin:-18px -22px 14px;background:var(--panel);overflow:hidden;border-bottom:1px solid var(--line)}
+.dimg img{display:block;width:100%;height:auto;max-height:340px;object-fit:cover;object-position:center top}
+.dimg:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+@media (max-width:600px){.dimg img{max-height:240px}}
 .db{padding:16px 22px;overflow:auto;flex:1}
 .kv{display:grid;grid-template-columns:130px 1fr;gap:8px 12px;font-size:15px}
 .kv dt{color:var(--muted)}
@@ -212,7 +216,7 @@ body.open #drawer{transform:none}
 
 <div id="gate">
   <form class="gate-card" id="gateForm">
-    <div class="brand"><span class="mark">eventsar</span><span class="sub">Arthrex · календарь мероприятий</span></div>
+    <div class="brand"><span class="mark" aria-label="EventsAR">Events<b>AR</b></span><span class="sub">Arthrex · календарь мероприятий</span></div>
     <h1>Вход</h1>
     <p>Введите пароль этой недели. Его выдаёт администратор календаря.</p>
     <label class="lbl" for="pw">Пароль недели</label>
@@ -232,7 +236,7 @@ body.open #drawer{transform:none}
   <header>
     <div class="topbar"></div>
     <div class="hrow">
-      <div class="brand"><span class="mark" role="heading" aria-level="1">eventsar</span><span class="sub">Arthrex · календарь мероприятий</span></div>
+      <div class="brand"><span class="mark" role="heading" aria-level="1" aria-label="EventsAR">Events<b>AR</b></span><span class="sub">Arthrex · календарь мероприятий</span></div>
       <nav class="nav" aria-label="Период">
         <button class="iconbtn" id="prev" aria-label="Предыдущий период" title="Назад (←)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
         <button class="period" id="period" title="Выбрать месяц" aria-label="Выбрать месяц"></button>
@@ -494,6 +498,7 @@ function openEvent(id){
   const deadlinePast=e.deadline&&e.deadline<todayISO;
   $('#drawer').innerHTML=`
     <div class="dh" style="--c:var(--c-${e.type})">
+      ${e.image?`<a class="dimg" href="${esc(e.image)}" target="_blank" rel="noopener" aria-label="Открыть афишу в полном размере"><img src="${esc(e.image)}" alt="" loading="lazy" onerror="this.parentNode.remove()"></a>`:''}
       <button class="iconbtn close" id="dclose" aria-label="Закрыть (Esc)" title="Закрыть (Esc)">${ico('x')}</button>
       <div><span class="pill type" style="--c:var(--c-${e.type})">${L.type[e.type]||e.type}</span> <span class="pill s-${e.status}">${L.status[e.status]||e.status}</span> ${e.arthrex&&e.arthrex!=='none'?`<span class="pill ax">Arthrex: ${L.arthrex[e.arthrex]}</span>`:''}</div>
       <h2 id="dtitle">${esc(e.title)}</h2>

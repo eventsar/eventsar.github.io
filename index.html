@@ -1311,7 +1311,7 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('hashchange',()=>{if(!DATA)return;readHash();render();if(S.open)openEvent(S.open);else closeEvent()});
 
 /* ======================= чат с Клодом ======================= */
-const NTFY='https://ntfy.sh';
+const NTFY='https://149-56-214-208.sslip.io'; /* собственный релей ntfy на сервере OVH (ntfy.sh заблокирован в РФ) */
 const CHAT={topic:null,cid:null,name:'',msgs:[],seen:[],since:null,ctx:null,timer:null,unread:0,ph:0};
 const THINK=['Щас найду…','Щас-щас…','Всё найду, пришлю…','Смотрю в календаре…','Уже почти…','Щас, одну секунду…'];
 const SPARK=`<svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;

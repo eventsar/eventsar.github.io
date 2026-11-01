@@ -193,6 +193,27 @@ footer{padding:10px 20px;color:var(--muted);font-size:12px;border-top:1px solid 
 .ev.sel{outline:2px solid var(--blue)}
 .more{font-size:12px;color:var(--blue);margin-top:3px;font-weight:600;border:0;background:none;padding:2px 4px;border-radius:4px;cursor:pointer}
 .more:hover{background:var(--panel)}
+/* ---------- год ---------- */
+.year{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.ym{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 12px 10px;box-shadow:var(--shadow)}
+.ym h3{display:flex;align-items:center;justify-content:space-between;margin:0 0 6px;font-size:14px;font-weight:700}
+.ymt{border:0;background:none;padding:4px 8px;margin:-4px -8px;border-radius:6px;font:inherit;font-weight:700;color:var(--text);cursor:pointer;min-height:32px;display:inline-flex;align-items:center;gap:6px}
+.ymt::first-letter{text-transform:uppercase}
+.ymt:hover{background:var(--panel);color:var(--blue)}
+.ym.cur .ymt{color:var(--blue)}
+.ym h3 .n{font-size:12px;color:var(--muted);font-weight:600;background:var(--panel);border-radius:999px;padding:1px 8px;min-width:24px;text-align:center}
+.ygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.ydow{font-size:10px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:.04em;padding:2px 0 4px}
+.yd{position:relative;border:0;background:transparent;border-radius:6px;font-size:12px;line-height:1;padding:0;min-height:30px;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:background var(--dur-fast) var(--ease)}
+.yd.out{cursor:default;pointer-events:none}
+.yd:hover{background:var(--panel)}
+.yd.has{font-weight:700}
+.yd.today{background:var(--blue);color:#fff}
+.ydots{display:flex;gap:2px;height:4px}
+.ydots i{width:4px;height:4px;border-radius:50%;background:var(--c);display:block}
+.yd.today .ydots i{background:currentColor}
+html[data-dark] .yd.today{color:#041729}
+@media (max-width:700px){.year{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}.ym{padding:8px 8px 6px}.yd{font-size:11px;min-height:28px}}
 .fuzzy{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;padding:8px 12px;background:var(--card);border:1px dashed var(--line);border-radius:10px}
 .fuzzy .ev{margin:0;display:inline-block;width:auto;max-width:260px}
 .fz-t{font-size:12px;color:var(--muted);margin-right:4px}
@@ -684,6 +705,7 @@ html[data-dark] .seg .ind{border-radius:5px}
         <span class="ind" aria-hidden="true"></span>
         <button data-v="afisha" class="on" aria-pressed="true">Афиши</button>
         <button data-v="month" aria-pressed="false">Месяц</button>
+        <button data-v="year" aria-pressed="false">Год</button>
         <button data-v="week" aria-pressed="false">Неделя</button>
         <button data-v="day" aria-pressed="false">День</button>
         <button data-v="list" aria-pressed="false">Список</button>
@@ -752,6 +774,7 @@ html[data-dark] .seg .ind{border-radius:5px}
   <nav id="tabbar" aria-label="Разделы">
     <button type="button" data-v="afisha" class="on" aria-pressed="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.2"/></svg><span>Афиши</span></button>
     <button type="button" data-v="month" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>Месяц</span></button>
+    <button type="button" data-v="year" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/></svg><span>Год</span></button>
     <button type="button" data-v="week" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18M15 3v18"/></svg><span>Неделя</span></button>
     <button type="button" data-v="list" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Список</span></button>
     <button type="button" id="fbtn2" aria-controls="filters" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4"/></svg><span>Фильтры</span><span class="badge" id="fcount2" hidden>0</span></button>
@@ -814,7 +837,7 @@ async function decrypt(password, blob){
 let DATA=null, EVENTS=[];
 const S={view:'afisha',cursor:new Date(),sel:null,q:'',f:{type:new Set(),specialty:new Set(),status:new Set(),arthrex:new Set(),format:new Set(),country:new Set(),line:new Set(),managers:new Set(),source:new Set()},past:false,open:null,limit:48};
 S.cursor.setHours(0,0,0,0);
-const VIEWS=['afisha','month','week','day','list'];
+const VIEWS=['afisha','month','year','week','day','list'];
 
 /* ======================= мотион «Кино» ======================= */
 const RM=matchMedia('(prefers-reduced-motion: reduce)');
@@ -947,6 +970,7 @@ function render(){
   const state=canFlip?Flip.getState(v.querySelectorAll('[data-flip-id]'),{simple:true}):null;
   let period='';
   if(S.view==='month'){ period=`${MONTHS[c.getMonth()]} ${c.getFullYear()}`; v.innerHTML=renderMonth(list); }
+  else if(S.view==='year'){ period=`${c.getFullYear()}`; v.innerHTML=renderYear(list); }
   else if(S.view==='week'){ const a=startOfWeek(c),b=addDays(a,6); period=a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()} ${MONTHS_G[a.getMonth()]}`:`${a.getDate()} ${MONTHS_G[a.getMonth()]} – ${b.getDate()} ${MONTHS_G[b.getMonth()]}`; v.innerHTML=renderWeek(list); }
   else if(S.view==='day'){ period=`${c.getDate()} ${MONTHS_G[c.getMonth()]}, ${DOW_L[(c.getDay()+6)%7]}`; v.innerHTML=renderDay(list); }
   else if(S.view==='afisha'){ period=`${MONTHS[c.getMonth()]} ${c.getFullYear()}`; v.innerHTML=renderAfisha(list); }
@@ -977,8 +1001,8 @@ function render(){
 let heroST=null, heroSrc='';
 function renderHero(list,period,changed){
   const h=$('#hero'); const c=S.cursor;
-  const first=S.view==='week'?iso(startOfWeek(c)):S.view==='day'?iso(c):`${c.getFullYear()}-${pad(c.getMonth()+1)}-01`;
-  const last=S.view==='week'?iso(addDays(startOfWeek(c),6)):S.view==='day'?iso(c):iso(new Date(c.getFullYear(),c.getMonth()+1,0));
+  const first=S.view==='year'?`${c.getFullYear()}-01-01`:S.view==='week'?iso(startOfWeek(c)):S.view==='day'?iso(c):`${c.getFullYear()}-${pad(c.getMonth()+1)}-01`;
+  const last=S.view==='year'?`${c.getFullYear()}-12-31`:S.view==='week'?iso(addDays(startOfWeek(c),6)):S.view==='day'?iso(c):iso(new Date(c.getFullYear(),c.getMonth()+1,0));
   const inP=list.filter(e=>!e.fuzzy&&e.start<=last&&e.end>=first);
   const dls=list.filter(e=>e.deadline&&e.deadline>=todayISO&&e.end>=todayISO).length;
   const ax=inP.filter(e=>e.arthrex&&e.arthrex!=='none').length;
@@ -1027,6 +1051,24 @@ function renderAfisha(list){
 function chip(e,cont){
   const lbl=[L.type[e.type]||e.type,e.title,fmtRange(e),e.status==='soldout'?'мест нет':'',e.status==='cancelled'?'отменено':''].filter(Boolean).join(', ');
   return `<button type="button" class="ev ${cont?'cont':''} ${e.status==='cancelled'?'cancelled':''} ${S.open===e.id?'sel':''}" style="--c:var(--c-${e.type})" data-id="${e.id}" title="${esc(e.title)}" aria-label="${esc(lbl)}">${cont?'→ ':''}${e.time&&!cont?`<b>${e.time}</b> `:''}${esc(e.title)}</button>`;
+}
+function renderYear(list){
+  const y=S.cursor.getFullYear(), now=new Date(); let out='';
+  for(let m=0;m<12;m++){
+    const start=startOfWeek(new Date(y,m,1));
+    const mf=`${y}-${pad(m+1)}-01`, ml=iso(new Date(y,m+1,0));
+    const inM=list.filter(e=>!e.fuzzy&&e.start<=ml&&e.end>=mf), fz=fuzzyIn(list,y,m);
+    let cells='';
+    for(let i=0;i<42;i++){
+      const d=addDays(start,i); if(i>=35&&d.getMonth()!==m) break;
+      const ds=iso(d), out_=d.getMonth()!==m, evs=out_?[]:onDay(inM,ds);
+      const types=[...new Set(evs.map(e=>e.type))].slice(0,3);
+      cells+=out_?'<span class="yd out" aria-hidden="true"></span>':`<button type="button" class="yd ${ds===todayISO?'today':''} ${evs.length?'has':''}" data-yd="${ds}" aria-label="${d.getDate()} ${MONTHS_G[m]}, мероприятий: ${evs.length}">${d.getDate()}${types.length?`<span class="ydots">${types.map(t=>`<i style="--c:var(--c-${t})"></i>`).join('')}</span>`:''}</button>`;
+    }
+    const n=inM.length+fz.length;
+    out+=`<section class="ym ${m===now.getMonth()&&y===now.getFullYear()?'cur':''}" aria-label="${MONTHS[m]} ${y}"><h3><button type="button" class="ymt" data-ym="${m}" title="Открыть месяц">${MONTHS[m]}</button><span class="n" aria-label="мероприятий: ${n}">${n||'—'}</span></h3><div class="ygrid">${DOW.map(d=>`<span class="ydow">${d}</span>`).join('')}${cells}</div></section>`;
+  }
+  return `<div class="year">${out}</div>`;
 }
 function renderMonth(list){
   const y=S.cursor.getFullYear(),m=S.cursor.getMonth();
@@ -1216,7 +1258,8 @@ function shift(n){
   const c=S.cursor;
   if(S.view==='month') S.sel=null;
   S.limit=48;
-  if(S.view==='month'||S.view==='list'||S.view==='afisha') S.cursor=new Date(c.getFullYear(),c.getMonth()+n,1);
+  if(S.view==='year') S.cursor=new Date(c.getFullYear()+n,c.getMonth(),1);
+  else if(S.view==='month'||S.view==='list'||S.view==='afisha') S.cursor=new Date(c.getFullYear(),c.getMonth()+n,1);
   else if(S.view==='week') S.cursor=addDays(c,7*n);
   else S.cursor=addDays(c,n);
   render();
@@ -1244,6 +1287,8 @@ $('#view').addEventListener('click',e=>{
   if(e.target.closest('#aclear')){S.sel=null;render();return}
   if(e.target.closest('[data-more]')){S.limit+=48;const n=$('#view').querySelectorAll('.pc').length;render();const fresh=[...$('#view').querySelectorAll('.pc')].slice(n);if(fresh[0]){fresh[0].focus({preventScroll:true});if(G())reveal(fresh,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:'power3.out',stagger:.02,clearProps:'transform'})}return}
   const ev=e.target.closest('[data-id]'); if(ev){openEvent(ev.dataset.id,ev);e.stopPropagation();return}
+  const ym=e.target.closest('[data-ym]'); if(ym){S.cursor=new Date(S.cursor.getFullYear(),+ym.dataset.ym,1);S.view='month';render();$('#view').focus();return}
+  const yd=e.target.closest('[data-yd]'); if(yd){S.cursor=parse(yd.dataset.yd);S.view=isCompact()?'month':'day';if(isCompact())S.sel=yd.dataset.yd;render();$('#view').focus();return}
   const cell=e.target.closest('.cell'); if(!cell) return;
   if(isCompact()){const ds=cell.dataset.d;S.sel=S.sel===ds?null:ds;S.cursor=parse(ds);render();return}
   S.cursor=parse(cell.dataset.d);S.view='day';render();$('#view').focus()

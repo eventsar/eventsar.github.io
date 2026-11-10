@@ -87,7 +87,7 @@ a{color:var(--blue)}
 .btn.ghost{background:var(--highlight);color:var(--blue);border-color:var(--blue)}
 .btn.ghost:hover{background:color-mix(in srgb,var(--blue) 14%,var(--card))}
 .btn.sm{padding:6px 10px;min-height:36px;font-size:13px}
-.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:10px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:10px;white-space:pre-line}
 
 /* ---------- layout ---------- */
 #app{display:grid;grid-template-rows:auto 1fr auto;min-height:100vh;min-height:100dvh}
@@ -935,7 +935,7 @@ async function tryLogin(pw, silent){
     err.textContent='';
     boot();
   }catch(e){
-    if(e.name==='OperationError'){err.textContent='Неверный пароль. Проверьте раскладку и попробуйте ещё раз.';$('#pw').setAttribute('aria-invalid','true');$('#pw').select()}
+    if(e.name==='OperationError'){err.textContent='Неверный пароль. Проверьте раскладку и попробуйте ещё раз.\nПозвони Стасу, если не знаешь.';$('#pw').setAttribute('aria-invalid','true');$('#pw').select()}
     else err.textContent=e.message||'Ошибка';
     sessionStorage.removeItem('ak_pw');
   }finally{btn.disabled=false;btn.removeAttribute('aria-busy');btn.textContent='Войти'}

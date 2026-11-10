@@ -286,54 +286,6 @@ body.open #drawer{transform:none}
 .sw-arthrex{background:linear-gradient(135deg,#FFFFFF 50%,#0575D6 50%)}
 .sw-ortho{background:linear-gradient(135deg,#041729 50%,#4CAFFF 50%)}
 .sw-kino{background:linear-gradient(135deg,#000 50%,#4CAFFF 50%)}
-/* ---------- чат с Клодом ---------- */
-#cbtn{position:fixed;right:20px;bottom:20px;z-index:29;width:56px;height:56px;border-radius:50%;border:0;background:#D97757;color:#fff;box-shadow:0 6px 20px rgba(217,119,87,.45);display:flex;align-items:center;justify-content:center;transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease)}
-#cbtn:hover{background:#C4643F;transform:translateY(-1px);box-shadow:0 8px 24px rgba(217,119,87,.5)}
-#cbtn svg.spark{width:30px;height:30px}
-#cbtn .badge{position:absolute;top:-3px;right:-3px;background:var(--navy);margin:0;border:2px solid var(--card);line-height:16px}
-#chat{position:fixed;right:20px;bottom:88px;z-index:40;width:380px;max-width:calc(100% - 40px);height:min(620px,calc(100vh - 110px));background:var(--card);border-radius:16px;box-shadow:0 12px 40px rgba(39,69,92,.25);border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
-#chat[hidden]{display:none}
-.ch{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;border-bottom:1px solid var(--line);background:#FBF3EF}
-.cav{width:36px;height:36px;border-radius:50%;background:#D97757;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none}
-.cav svg.spark{width:20px;height:20px}
-.ch b{display:block;font-size:15px;line-height:1.2}
-.ch small{color:var(--muted);font-size:12px}
-.ch .iconbtn{margin-left:auto;border:0;background:transparent}
-.cmsgs{flex:1;overflow:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:8px;background:var(--panel-2);-webkit-overflow-scrolling:touch}
-.cm{max-width:86%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
-.cm.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
-.cm.ai{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
-.cm.me.fail{background:var(--bad)}
-.cm a{color:inherit;text-decoration:underline;word-break:break-all}
-.cm.think{display:flex;align-items:center;gap:12px;background:#FBF3EF;border-color:#EBCDBF;color:#9A4A2C;padding:8px 14px 8px 10px}
-.walker{width:46px;height:26px;position:relative;flex:none}
-.walker svg.spark{position:absolute;left:0;top:3px;width:20px;height:20px;color:#D97757;animation:walk 2.6s ease-in-out infinite}
-.walker::after{content:"";position:absolute;left:4px;right:4px;bottom:0;height:2px;border-radius:2px;background:#EBCDBF}
-@keyframes walk{0%{transform:translateX(0) rotate(0) translateY(0)}12%{transform:translateX(7px) rotate(45deg) translateY(-3px)}25%{transform:translateX(13px) rotate(90deg) translateY(0)}37%{transform:translateX(20px) rotate(135deg) translateY(-3px)}50%{transform:translateX(26px) rotate(180deg) translateY(0)}62%{transform:translateX(20px) rotate(135deg) translateY(-3px)}75%{transform:translateX(13px) rotate(90deg) translateY(0)}87%{transform:translateX(7px) rotate(45deg) translateY(-3px)}100%{transform:translateX(0) rotate(0) translateY(0)}}
-.think .tx{font-size:14px}
-.think .tx small{display:block;font-size:11px;opacity:.75}
-.cm.ai a{color:var(--blue)}
-.cm time,.cm .st{display:block;font-size:11px;opacity:.75;margin-top:3px}
-.cm .st button{background:none;border:0;color:inherit;text-decoration:underline;padding:0;font-size:11px}
-.cctx{display:flex;align-items:center;gap:6px;padding:6px 14px;font-size:12px;color:var(--muted);background:var(--card);border-top:1px solid var(--line)}
-.cctx span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.cctx .iconbtn{width:32px;height:32px;border:0}
-.cform{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)}
-#cname{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;min-height:40px;outline:none}
-.crow{display:flex;gap:8px;align-items:flex-end}
-#ctext{flex:1;resize:none;padding:10px 12px;border:1px solid var(--line);border-radius:12px;min-height:44px;max-height:140px;line-height:1.4;outline:none;background:var(--panel-2)}
-#ctext:focus,#cname:focus{border-color:var(--blue);background:var(--card);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent)}
-.csend{width:44px;height:44px;border-radius:50%;border:0;background:#D97757;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none;transition:background var(--dur-fast) var(--ease)}
-.csend:hover{background:#C4643F}
-.csend[disabled]{opacity:.5;cursor:progress}
-.chint{font-size:11px;color:var(--muted);margin-top:6px}
-.cattach{width:44px;height:44px;border:0;color:var(--muted);flex:none}
-.cattach:hover{color:var(--text)}
-.cfile{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 6px 6px 8px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--panel-2)}
-.cfile img{width:40px;height:40px;object-fit:cover;border-radius:6px;background:var(--card)}
-.cfile span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cfile .iconbtn{width:32px;height:32px;border:0}
-.cm .cimg{display:block;max-width:100%;max-height:260px;border-radius:10px;margin:2px 0 6px;background:var(--card)}
 #sbtn,.ffoot,#tabbar{display:none}
 .fhead .iconbtn{margin-left:8px}
 #tabbar{position:fixed;left:0;right:0;bottom:0;z-index:22;background:var(--card);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(39,69,92,.06)}
@@ -406,10 +358,6 @@ body.open #drawer{transform:none}
   .dh h2{font-size:18px}
   .db{padding:14px 16px}
   .df{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
-  #cbtn{right:14px;bottom:calc(74px + env(safe-area-inset-bottom));width:52px;height:52px}
-  #chat{inset:0;width:auto;max-width:none;height:auto;border-radius:0;border:0}
-  body.chat{overflow:hidden}
-  body.chat #cbtn{display:none}
 }
 @media (min-width:1101px){.dots,.agenda{display:none}}
 
@@ -618,17 +566,6 @@ html[data-dark] .hist{border-left-color:var(--line)}
 html[data-dark] .flyimg{position:fixed;z-index:60;object-fit:cover;border-radius:12px;pointer-events:none;will-change:transform,width,height}
 html[data-dark] .kv dt{color:var(--muted)}
 html[data-dark] .sec h3{color:var(--muted)}
-html[data-dark] #chat{background:var(--panel-2);border-color:var(--line);box-shadow:0 30px 80px rgba(0,0,0,.6)}
-html[data-dark] .ch{background:var(--panel);border-bottom-color:var(--line)}
-html[data-dark] .cmsgs{background:var(--panel-2)}
-html[data-dark] .cm.ai{background:var(--panel);border-color:var(--line)}
-html[data-dark] .cm.think{background:rgba(217,119,87,.14);border-color:rgba(217,119,87,.3);color:#F0B9A2}
-html[data-dark] .walker::after{background:rgba(217,119,87,.35)}
-html[data-dark] .cctx,html[data-dark] .cform{background:var(--panel-2);border-top-color:var(--line)}
-html[data-dark] #cname,html[data-dark] #ctext{background:rgba(255,255,255,.05);border-color:var(--line);color:var(--text)}
-html[data-dark] #ctext:focus,html[data-dark] #cname:focus{background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(79,163,255,.2)}
-html[data-dark] .cfile{background:var(--panel);border-color:var(--line)}
-html[data-dark] #cbtn .badge{border-color:var(--bg)}
 html[data-dark] #tabbar{background:rgba(7,9,13,.86);backdrop-filter:blur(16px);border-top-color:var(--line);box-shadow:none}
 html[data-dark] .ffoot{background:var(--panel-2);border-top-color:var(--line)}
 html[data-dark] .fhead{border-bottom-color:var(--line)}
@@ -656,7 +593,7 @@ html[data-dark] .pc:hover,html[data-dark] .card:hover{transform:none}
 html[data-dark] .pc:hover .pcimg img{transform:none}
 }
 @media print{
-html[data-dark] header,html[data-dark] #filters,html[data-dark] footer,html[data-dark] #cbtn,html[data-dark] #chat,html[data-dark] #tabbar,html[data-dark] #hero{display:none;background:var(--hero-bg);color:var(--hero-text)}
+html[data-dark] header,html[data-dark] #filters,html[data-dark] footer,html[data-dark] #tabbar,html[data-dark] #hero{display:none;background:var(--hero-bg);color:var(--hero-text)}
 html[data-dark] .body{display:block}
 }
 html[data-dark] .seg .ind{background:var(--blue);box-shadow:none}
@@ -891,19 +828,6 @@ html[data-fire="sparks"] .pcb .dt,html[data-fire="sparks"] .pcb .m{color:#FFE7D8
     <span id="built"></span>
   </footer>
 
-  <button type="button" id="cbtn" aria-label="Написать Клоду" title="Написать Клоду" aria-controls="chat" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span class="badge" id="cunread" hidden>0</span></button>
-  <section id="chat" role="dialog" aria-label="Чат с Клодом" hidden>
-    <div class="ch"><span class="cav"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span><div><b>Клод</b><small id="cstatus">помощник календаря · отвечает здесь</small></div><button type="button" class="iconbtn" id="cclose" aria-label="Закрыть чат"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-    <div class="cmsgs" id="cmsgs" aria-live="polite" aria-label="Сообщения"></div>
-    <div class="cctx" id="cctx" hidden><span></span><button type="button" class="iconbtn" id="cctxx" aria-label="Убрать привязку к мероприятию"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-    <form class="cform" id="cform">
-      <input id="cname" placeholder="Как вас зовут?" aria-label="Ваше имя" autocomplete="name" maxlength="40">
-      <div class="cfile" id="cfilechip" hidden><img alt="" id="cfilethumb"><span id="cfilename"></span><button type="button" class="iconbtn" id="cfilex" aria-label="Убрать картинку"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-      <div class="crow"><input type="file" id="cfile" accept="image/*" class="vh" tabindex="-1" aria-hidden="true"><button type="button" class="iconbtn cattach" id="cattach" aria-label="Прикрепить скриншот" title="Прикрепить скриншот"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.1-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.8 1.8 0 0 1-2.6-2.6l7.8-7.8"/></svg></button><textarea id="ctext" rows="1" placeholder="Напишите Клоду…" aria-label="Сообщение" maxlength="1500"></textarea><button class="csend" type="submit" aria-label="Отправить"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/></svg></button></div>
-      <div class="chint">Сообщения видят Клод и администратор календаря. Ответ появится здесь — окно можно закрыть и вернуться.</div>
-    </form>
-  </section>
-
   <nav id="tabbar" aria-label="Разделы">
     <button type="button" data-v="afisha" class="on" aria-pressed="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.2"/></svg><span>Афиши</span></button>
     <button type="button" data-v="month" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>Месяц</span></button>
@@ -1008,7 +932,6 @@ async function tryLogin(pw, silent){
     const blob=await r.json();
     DATA=await decrypt(pw,blob);
     sessionStorage.setItem('ak_pw',pw);
-    CHAT.topic=await chatTopic(pw);
     err.textContent='';
     boot();
   }catch(e){
@@ -1028,12 +951,12 @@ function boot(){
   readHash();
   $('#built').textContent=DATA.built_at?'Данные обновлены: '+fmtDT(DATA.built_at):'';
   const gate=$('#gate'), app=$('#app');
-  if(!G()){ gate.hidden=true; app.hidden=false; buildFilters(); render(); if(S.open) openEvent(S.open); chatInit(); return; }
+  if(!G()){ gate.hidden=true; app.hidden=false; buildFilters(); render(); if(S.open) openEvent(S.open); return; }
   /* вход как в кино: гейт растворяется, заголовок проявляется из размытия, карточки поднимаются волной */
   let shown=false;
   const show=()=>{
     if(shown)return; shown=true;
-    gate.hidden=true; app.hidden=false; buildFilters(); render(); chatInit();
+    gate.hidden=true; app.hidden=false; buildFilters(); render();
     const tl=gsap.timeline();
     tl.from('#himg',{scale:1.15,duration:2.2,ease:'power2.out'},0)
       .fromTo('#h1',{opacity:0,y:30,filter:'blur(14px)'},{opacity:1,y:0,filter:'blur(0px)',duration:1.1,ease:EASE_OUT,clearProps:'filter'},.1)
@@ -1435,7 +1358,7 @@ $('#view').addEventListener('keydown',e=>{
   const t=e.target.closest('.card[data-id],.pc[data-id]'); if(t){e.preventDefault();openEvent(t.dataset.id,t)}
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(!$('#tlist').hidden){toggleTmenu(false);$('#tbtn').focus();return}if(!$('#chat').hidden){closeChat();return}closeEvent();closeFilters();return}
+  if(e.key==='Escape'){if(!$('#tlist').hidden){toggleTmenu(false);$('#tbtn').focus();return}closeEvent();closeFilters();return}
   if(document.body.classList.contains('open')){
     if(e.key==='Tab'){const f=[...$('#drawer').querySelectorAll('button,a[href],input,[tabindex="0"]')].filter(x=>!x.disabled);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('#drawer'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
     return;
@@ -1445,112 +1368,8 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowLeft') shift(-1); else if(e.key==='ArrowRight') shift(1);
   else if(e.key==='t'||e.key==='е') $('#today').click();
 });
+try{['evar_chat','evar_seen','evar_since','evar_unread','evar_cid','evar_name'].forEach(k=>localStorage.removeItem(k))}catch(e){}
 window.addEventListener('hashchange',()=>{if(!DATA)return;readHash();render();if(S.open)openEvent(S.open);else closeEvent()});
-
-/* ======================= чат с Клодом ======================= */
-const NTFY='https://149-56-214-208.sslip.io'; /* собственный релей ntfy на сервере OVH (ntfy.sh заблокирован в РФ) */
-const CHAT={topic:null,cid:null,name:'',msgs:[],seen:[],since:null,ctx:null,timer:null,unread:0,ph:0};
-const THINK=['Щас найду…','Щас-щас…','Всё найду, пришлю…','Смотрю в календаре…','Уже почти…','Щас, одну секунду…'];
-const SPARK=`<svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-function thinking(){const l=CHAT.msgs[CHAT.msgs.length-1];return !!(l&&l.role==='me'&&!l.status)}
-setInterval(()=>{const t=document.querySelector('#cthink');if(!t)return;CHAT.ph=(CHAT.ph+1)%THINK.length;t.textContent=THINK[CHAT.ph]},1700);
-const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
-async function chatTopic(pw){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('eventsar-chat:'+pw));return 'evar-'+[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,24)}
-const rid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
-function chatInit(){
-  CHAT.cid=ls('evar_cid')||(ls('evar_cid',rid()),ls('evar_cid'))||rid();
-  CHAT.name=ls('evar_name')||'';
-  try{CHAT.msgs=JSON.parse(ls('evar_chat')||'[]')}catch(e){CHAT.msgs=[]}
-  try{CHAT.seen=JSON.parse(ls('evar_seen')||'[]')}catch(e){CHAT.seen=[]}
-  CHAT.since=ls('evar_since')||null;
-  if(!CHAT.msgs.length) CHAT.msgs.push({id:'hello',role:'ai',at:new Date().toISOString(),text:'Здравствуйте! Я Клод — помогаю вести этот календарь. Напишите, что исправить, добавить или что непонятно. Отвечу здесь же; окно можно закрыть и вернуться позже.'});
-  CHAT.unread=+(ls('evar_unread')||0); showUnread();
-  $('#cname').value=CHAT.name; $('#cname').hidden=!!CHAT.name;
-  $('#cbtn').onclick=()=>$('#chat').hidden?openChat():closeChat();
-  $('#cclose').onclick=closeChat;
-  $('#cctxx').onclick=()=>{CHAT.ctx=null;showCtx()};
-  $('#cform').onsubmit=e=>{e.preventDefault();sendChat()};
-  $('#ctext').addEventListener('input',autoGrow);
-  $('#cattach').onclick=()=>$('#cfile').click();
-  $('#cfile').onchange=e=>attach(e.target.files[0]);
-  $('#cfilex').onclick=clearFile;
-  $('#ctext').addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();attach(it.getAsFile())}});
-  $('#ctext').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!matchMedia('(pointer:coarse)').matches){e.preventDefault();sendChat()}});
-  $('#cmsgs').addEventListener('click',e=>{const b=e.target.closest('[data-retry]');if(b)resend(b.dataset.retry)});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollChat()});
-  renderChat(); schedulePoll();
-}
-function saveChat(){ls('evar_chat',JSON.stringify(CHAT.msgs.slice(-200).map(({blob,...m})=>m)));ls('evar_seen',JSON.stringify(CHAT.seen.slice(-300)));if(CHAT.since)ls('evar_since',CHAT.since);ls('evar_unread',CHAT.unread)}
-function showUnread(){const b=$('#cunread');b.hidden=!CHAT.unread;b.textContent=CHAT.unread;$('#cbtn').setAttribute('aria-label',CHAT.unread?`Написать Клоду, новых ответов: ${CHAT.unread}`:'Написать Клоду')}
-function showCtx(){const c=$('#cctx');c.hidden=!CHAT.ctx;if(CHAT.ctx)c.querySelector('span').textContent='О мероприятии: '+CHAT.ctx.title}
-let cfile=null;
-function readImage(file){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>res(img);img.onerror=rej;img.src=URL.createObjectURL(file)})}
-function toBlob(canvas,q){return new Promise(res=>canvas.toBlob(res,'image/jpeg',q))}
-async function prepImage(file){
-  const img=await readImage(file);
-  const draw=(max)=>{const k=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c};
-  const big=draw(1600), small=draw(320);
-  const blob=await toBlob(big,.82);
-  return {blob,thumb:small.toDataURL('image/jpeg',.7),name:(file.name||'screenshot').replace(/\.[^.]+$/,'')+'.jpg'};
-}
-async function attach(file){
-  if(!file||!file.type.startsWith('image/')) return;
-  try{cfile=await prepImage(file)}catch(e){cfile=null;return}
-  $('#cfilethumb').src=cfile.thumb;$('#cfilename').textContent=cfile.name+' · '+Math.round(cfile.blob.size/1024)+' КБ';$('#cfilechip').hidden=false;$('#ctext').focus();
-}
-function clearFile(){cfile=null;$('#cfile').value='';$('#cfilechip').hidden=true}
-function autoGrow(){const t=$('#ctext');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px'}
-let chatFocus=null;
-function openChat(ctx){
-  if(ctx)CHAT.ctx=ctx; showCtx();
-  if($('#chat').hidden){chatFocus=document.activeElement;$('#chat').hidden=false;document.body.classList.add('chat');$('#cbtn').setAttribute('aria-expanded','true')}
-  CHAT.unread=0;showUnread();saveChat();renderChat();pollChat();
-  (CHAT.name?$('#ctext'):$('#cname')).focus();
-}
-function closeChat(){if($('#chat').hidden)return;$('#chat').hidden=true;document.body.classList.remove('chat');$('#cbtn').setAttribute('aria-expanded','false');if(chatFocus&&document.contains(chatFocus)&&chatFocus!==document.body)chatFocus.focus();else $('#cbtn').focus();chatFocus=null}
-function fmtT(s){const d=new Date(s);return isNaN(d)?'':`${pad(d.getHours())}:${pad(d.getMinutes())}`}
-const linkify=t=>t.replace(/https?:\/\/[^\s<]+/g,u=>{const m=u.match(/^(.*?)([.,;:!?)»]+)?$/);return `<a href="${m[1]}" target="_blank" rel="noopener">${m[1]}</a>${m[2]||''}`});
-function renderChat(){
-  const box=$('#cmsgs');
-  box.innerHTML=CHAT.msgs.map(m=>`<div class="cm ${m.role==='ai'?'ai':'me'} ${m.status==='fail'?'fail':''}">${m.img?`<img class="cimg" src="${m.img}" alt="Прикреплённая картинка">`:''}${linkify(esc(m.text))}${m.ctx?`<div class="st">о мероприятии: ${esc(m.ctx.title)}</div>`:''}<time>${m.role==='ai'?'Клод · ':''}${fmtT(m.at)}</time>${m.status==='fail'?`<span class="st">Не доставлено · <button type="button" data-retry="${esc(m.id)}">повторить</button></span>`:m.status==='sending'?'<span class="st">отправляю…</span>':''}</div>`).join('');
-  if(thinking()){const l=CHAT.msgs[CHAT.msgs.length-1];const long=Date.now()-new Date(l.at)>15*60000;
-    box.insertAdjacentHTML('beforeend',`<div class="cm ai think" role="status"><span class="walker" aria-hidden="true">${SPARK}</span><span class="tx">${long?'Клод пока не ответил.<small>Ответ придёт сюда — окно можно закрыть и вернуться.</small>':`<span id="cthink">${THINK[CHAT.ph]}</span><small>Клод ищет ответ</small>`}</span></div>`)}
-  box.scrollTop=box.scrollHeight;
-}
-async function postMsg(m){
-  const body=JSON.stringify({id:m.id,cid:CHAT.cid,name:CHAT.name,text:m.text,ctx:m.ctx||null,page:location.hash,ua:matchMedia('(max-width:700px)').matches?'телефон':'десктоп',at:m.at});
-  const r=m.blob?await fetch(`${NTFY}/${CHAT.topic}?message=${encodeURIComponent(body)}&filename=${encodeURIComponent(m.fname||'screenshot.jpg')}`,{method:'PUT',body:m.blob})
-               :await fetch(`${NTFY}/${CHAT.topic}`,{method:'POST',body});
-  if(!r.ok) throw new Error('ntfy '+r.status);
-}
-async function sendChat(){
-  const t=$('#ctext'); const text=t.value.trim(); if((!text&&!cfile)||!CHAT.topic) return;
-  const name=$('#cname').value.trim(); if(name&&name!==CHAT.name){CHAT.name=name;ls('evar_name',name)} $('#cname').hidden=!!CHAT.name;
-  const m={id:rid(),role:'me',text:text||'(скриншот)',ctx:CHAT.ctx,at:new Date().toISOString(),status:'sending'};
-  if(cfile){m.img=cfile.thumb;m.blob=cfile.blob;m.fname=cfile.name;clearFile()}
-  CHAT.msgs.push(m); t.value='';autoGrow(); renderChat();
-  try{await postMsg(m);delete m.status}catch(e){m.status='fail'}
-  saveChat(); renderChat(); t.focus();
-}
-async function resend(id){const m=CHAT.msgs.find(x=>x.id===id);if(!m)return;m.status='sending';renderChat();try{await postMsg(m);delete m.status}catch(e){m.status='fail'}saveChat();renderChat()}
-function schedulePoll(){clearTimeout(CHAT.timer);CHAT.timer=setTimeout(async()=>{await pollChat();schedulePoll()},$('#chat').hidden?60000:thinking()?5000:7000)}
-async function pollChat(){
-  if(!CHAT.topic||document.hidden) return;
-  try{
-    const r=await fetch(`${NTFY}/${CHAT.topic}-r/json?poll=1&since=${CHAT.since?Math.max(0,+CHAT.since-1):'all'}`,{cache:'no-store'});
-    if(!r.ok) return;
-    const txt=await r.text(); let added=0;
-    for(const line of txt.split('\n')){
-      if(!line.trim()) continue; let m; try{m=JSON.parse(line)}catch(e){continue}
-      if(m.event!=='message'||CHAT.seen.includes(m.id)) continue;
-      CHAT.seen.push(m.id); CHAT.since=String(m.time);
-      let p; try{p=JSON.parse(m.message)}catch(e){p={to:'*',text:m.message}}
-      if(p.to!=='*'&&p.to!==CHAT.cid) continue;
-      CHAT.msgs.push({id:p.id||m.id,role:'ai',text:p.text||'',at:p.at||new Date(m.time*1000).toISOString()}); added++;
-    }
-    if(added){if($('#chat').hidden){CHAT.unread+=added;showUnread()}saveChat();renderChat();$('#cstatus').textContent='помощник календаря · отвечает здесь'}
-  }catch(e){}
-}
 
 /* ======================= живой фон тем «Пламя» ======================= */
 const FIRE=['flame','lava','dawn','sunset','sparks'];

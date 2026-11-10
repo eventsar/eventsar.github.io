@@ -334,9 +334,6 @@ body.open #drawer{transform:none}
 .cfile span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cfile .iconbtn{width:32px;height:32px;border:0}
 .cm .cimg{display:block;max-width:100%;max-height:260px;border-radius:10px;margin:2px 0 6px;background:var(--card)}
-.btn.ask{display:inline-flex;align-items:center;gap:6px;border-color:#EBCDBF;color:#9A4A2C;background:#FBF3EF}
-.btn.ask:hover{background:#F5E3DA}
-.btn.ask svg.spark{width:16px;height:16px;color:#D97757}
 #sbtn,.ffoot,#tabbar{display:none}
 .fhead .iconbtn{margin-left:8px}
 #tabbar{position:fixed;left:0;right:0;bottom:0;z-index:22;background:var(--card);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(39,69,92,.06)}
@@ -631,8 +628,6 @@ html[data-dark] .cctx,html[data-dark] .cform{background:var(--panel-2);border-to
 html[data-dark] #cname,html[data-dark] #ctext{background:rgba(255,255,255,.05);border-color:var(--line);color:var(--text)}
 html[data-dark] #ctext:focus,html[data-dark] #cname:focus{background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(79,163,255,.2)}
 html[data-dark] .cfile{background:var(--panel);border-color:var(--line)}
-html[data-dark] .btn.ask{background:rgba(217,119,87,.14);border-color:rgba(217,119,87,.35);color:#F0B9A2}
-html[data-dark] .btn.ask:hover{background:rgba(217,119,87,.24)}
 html[data-dark] #cbtn .badge{border-color:var(--bg)}
 html[data-dark] #tabbar{background:rgba(7,9,13,.86);backdrop-filter:blur(16px);border-top-color:var(--line);box-shadow:none}
 html[data-dark] .ffoot{background:var(--panel-2);border-top-color:var(--line)}
@@ -1333,14 +1328,12 @@ function openEvent(id,src){
     <div class="df">
       <button class="btn sm" id="ics">В мой календарь (.ics)</button>
       <button class="btn ghost sm" id="copy">Скопировать ссылку</button>
-      <button class="btn ghost sm ask" id="dask" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" class="spark"><path d="M12.0 9.4L12.0 2.4M13.6 9.9L16.3 6.2M14.1 10.5L19.0 7.1M14.6 12.0L18.6 12.0M14.1 13.6L19.3 17.5M13.5 14.1L16.0 17.7M12.0 14.6L12.0 21.8M10.4 14.1L7.9 17.4M9.9 13.5L5.1 16.8M9.4 12.0L4.6 12.0M9.9 10.4L4.5 6.3M10.5 9.9L8.0 6.3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>Спросить Клода</button>
       <span class="upd">обновлено ${fmtDT(e.updated_at)}</span>
     </div>`;
   flipOpen(e);
   $('#drawer').focus();
   $('#dclose').onclick=closeEvent;
   $('#ics').onclick=()=>downloadICS(e);
-  $('#dask').onclick=()=>openChat({id:e.id,title:e.title});
   $('#copy').onclick=ev=>{navigator.clipboard.writeText(location.href).then(()=>{ev.target.textContent='Скопировано';setTimeout(()=>ev.target.textContent='Скопировать ссылку',1500)})};
   document.querySelectorAll('.ev.sel').forEach(x=>x.classList.remove('sel'));
   document.querySelectorAll(`.ev[data-id="${CSS.escape(id)}"]`).forEach(x=>x.classList.add('sel'));
